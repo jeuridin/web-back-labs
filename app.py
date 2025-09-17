@@ -107,3 +107,28 @@ def created():
 @app.errorhandler(404)
 def not_found(err):
     return "нет такой страницы", 404
+
+@app.route('/')
+@app.route('/index')
+def index():
+    return '''
+<!doctype html>
+<html>
+    <body>
+        <header>
+            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
+        </header>
+        <main>
+        <h1>Лабораторные работы</h1>
+        <ol>
+            <li>
+            <a href='/lab1'>Лабораторная работа 1</a>
+            </li>
+        </ol>
+        </main>
+        <footer>
+            Азарян Жанна Арамовна, ФБИ-32, 3 курс, 2025
+        </footer>
+    </body>
+</html>
+'''
