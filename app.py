@@ -62,14 +62,31 @@ def counter():
 <!doctype html>
 <html>
     <body>
-        Сколько раз вы сюда заходжили: ''' + str(count) +'''
+        Сколько раз вы сюда заходили: ''' + str(count) +'''
         <hr> 
         Дата и время: ''' + str(time) + '''<br>
         Запрошенный адрес: ''' + url + '''<br>
         Ваш IP-адрес: ''' + client_ip +'''<br>
+        <a href="/cleaner">Очистка</a>
     </body>
 </html>
 '''
+
+@app.route('/cleaner')
+def cleaner():
+        global count
+        count = 0  
+        return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Счётчик очищен. Можете перейти обратно на страницу счётчика.</h1>
+        <a href="/counter">Назад к счётчику</a>
+    </body>
+</html>
+'''
+
+
 
 @app.route('/info')
 def info():
