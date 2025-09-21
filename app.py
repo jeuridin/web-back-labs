@@ -297,3 +297,29 @@ def err418():
     </body>
 </html>
 ''', 418
+
+@app.route('/lab1/500')
+def error500():
+    return 1 / 0
+
+@app.errorhandler(500)
+def not_found(err):
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ошибка 500</title>
+        <style>
+            h1 {
+                font-size: 50px;
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+    <h1>Whoops.. Внутренняя ошибка сервера</h1>
+    </body>
+</html>
+''', 500
