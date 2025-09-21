@@ -106,7 +106,36 @@ def created():
 
 @app.errorhandler(404)
 def not_found(err):
-    return "нет такой страницы", 404
+    error404 = url_for("static", filename="error.jpg")
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ошибка 404</title>
+        <style>
+            body {
+                background-color: rgb(195, 222, 239);
+            }
+            h1 {
+                font-size: 80px;
+                color: blue;
+                text-shadow: 10px 10px 20px grey;
+                text-align: center;
+            }
+            img {
+                display: block; 
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Блин... такой страницы не существует</h1>
+        <img src="''' + error404 + '''">
+    </body>
+</html>
+''', 404
 
 @app.route('/')
 @app.route('/index')
