@@ -96,7 +96,7 @@ def cleaner():
 def info():
     return redirect('/lab1/author')
 
-@app.route('/created')
+@app.route('/lab1/created')
 def created():
     return '''
 <!doctype html>
@@ -183,6 +183,54 @@ def lab1():
         веб-приложений, сознательно предоставляющих лишь самые базовые возможности.
     </p>
     <a href='/'>Главная страница</a>
+    <h2>Список роутов:</h2>
+        <ul>
+            <li>
+                <a href='/lab1/web'>Web-serber на Flask</a>
+            </li>
+            <li>
+                <a href='/lab1/author'>Автор</a>
+            </li>
+            <li>
+                <a href='/lab1/image'>Картинка</a>
+            </li>
+            <li>
+                <a href='/lab1/counter'>Счетчик</a>
+            </li>
+            <li>
+                <a href='/lab1/info'>Информация</a>
+            </li>
+            <li>
+                <a href='/lab1/created'>Создание</a>
+            </li>
+            <li>
+                <a href='/lab1'>Лабораторная 1</a>
+            </li>
+            <li>
+                <a href='/lab1/err400'>Ошибка 400</a>
+            </li>
+            <li>
+                <a href='/lab1/err401'>Ошибка 401</a>
+            </li>
+            <li>
+                <a href='/lab1/err402'>Ошибка 402</a>
+            </li>
+            <li>
+                <a href='/lab1/err403'>Ошибка 403</a>
+            </li>
+            <li>
+                <a href='/lab1/err405'>Ошибка 405</a>
+            </li>
+            <li>
+                <a href='/lab1/err418'>Ошибка 418</a>
+            </li>
+            <li>
+                <a href='/lab1/500'>Ошибка 500</a>
+            </li>
+            <li>
+                <a href='/lab1/blablabla'>Страница не сущетсвует</a>
+            </li>
+        </ul>
     </body>
 </html>
 '''
