@@ -153,3 +153,118 @@ def lab1():
     </body>
 </html>
 '''
+
+@app.route('/lab1/err400')
+def err400():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <style>
+            h1 {
+            font-weight: bold;
+            color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Неверный запрос!!!!!</h1>
+    </body>
+</html>
+''', 400
+
+@app.route("/lab1/err401")
+def err401():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <style>
+            h1 {
+            font-size: 50px;
+            color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <h1><i>Ой.. Для продолжения нужно войти в систему</i></h1>
+    </body>
+</html>
+''', 401
+
+@app.route('/lab1/err402')
+def err402():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <style>
+            h1 {
+            font-size: 50px;
+            color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Необходима оплата!!</h1>
+    </body>
+</html>
+''', 402
+
+@app.route('/lab1/err403')
+def err403():
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <style>
+            h1 {
+            font-size: 50px;
+            color: red;
+            }
+        </style>
+    </head>
+    <body>
+    <h1>У вас нет доступа к этому ресурсу</h1>
+    </body>
+</html>
+''', 403
+
+
+@app.route('/lab1/err405')
+def err405():
+    return '''
+<!doctype html>
+<html>
+    <head>
+    <style>
+        h1 {
+            font-size: 50px;
+            color: red;
+        }
+    </style>
+    </head>
+    <body>
+        <h1>Метод запроса запрещён для данного ресурса!!</h1>
+    </body>
+</html>
+''', 405
+
+@app.route('/lab1/err418')
+def err418():
+    return '''
+<!doctype html>
+<html>
+    <head>
+    <style>
+        h1 {
+            font-size: 50px;
+            color: red;
+        }
+    </style>
+    </head>
+    <body>
+        <h1>Я - чайник..</h1>
+    </body>
+</html>
+''', 418
