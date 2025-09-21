@@ -47,7 +47,11 @@ def image():
         <img src="''' + path + '''">
     </body>
 </html>
-    '''
+    ''', 200, {
+        'Content-Language': 'ru',
+        'X-My-Zagolovok': 'priroda',
+        'X-Another-Zagolovok': 'prirodaPhoto'
+    }
 
 count = 0
 @app.route('/lab1/counter')
