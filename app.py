@@ -108,9 +108,18 @@ def created():
 </html>
 ''', 201
 
+
+visit_log = []
 @app.errorhandler(404)
 def not_found(err):
     error404 = url_for("static", filename="error.jpg")
+    time = datetime.datetime.today()
+    client_ip = request.remote_addr
+    url = request.url
+    visit_log.append(f"{str(time)}, пользователь {client_ip} зашел на адрес <a href='{url}'>{url}</a>")
+    log_html = ""
+    for vhod in visit_log:
+        log_html += vhod + "<br>"
     return '''
 <!doctype html>
 <html>
@@ -125,16 +134,28 @@ def not_found(err):
             h1 {
                 font-size: 80px;
                 color: blue;
-                text-shadow: 10px 10px 20px grey;
                 text-align: center;
             }
             img {
                 display: block; 
                 margin: 0 auto;
             }
+            .log-container {
+                max-width: 800px;
+                margin: 20px auto;
+                background-color: #DBE9FA;
+                border: 6px solid #0277bd;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            }
         </style>
     </head>
     <body>
+        <div class="log-container">
+            <h2>Журнал посещений:</h2>
+            ''' + log_html + '''
+        </div>
         <h1>Блин... такой страницы не существует</h1>
         <img src="''' + error404 + '''">
     </body>
