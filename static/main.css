@@ -1,0 +1,33 @@
+img {
+        width: 500px;
+        height: 500px;
+        transition: filter 0.2s;
+        border: 2px solid #ccc;
+}
+
+body {
+    background-color: rgb(237, 206, 230);
+    color: rgb(120, 109, 156);
+    font-family: Arial;
+    margin: 0px;
+}
+
+header {
+    background-color: rgb(108, 97, 145);
+    color:rgb(238, 226, 238);
+    font-family: Arial;
+    margin: 0px;
+}
+
+footer {
+    background-color: rgb(108, 97, 145);
+    color:rgb(238, 226, 238);
+    font-family: Arial;
+    margin: 0px;
+    padding: 10px;
+    text-align: right;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
