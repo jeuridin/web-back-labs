@@ -515,3 +515,20 @@ def calc2():
 @app.route('/lab2/calc/<int:a>/')
 def calc3(a):
     return redirect(url_for('calc', a=a, b=1))
+
+books = [
+    {'author': 'Лев Толстой', 'title': 'Война и мир', 'genre': 'Роман-эпопея', 'pages': 1300},
+    {'author': 'Фёдор Достоевский', 'title': 'Преступление и наказание', 'genre': 'Психологический роман', 'pages': 670},
+    {'author': 'Александр Пушкин', 'title': 'Евгений Онегин', 'genre': 'Роман', 'pages': 240},
+    {'author': 'Михаил Булгаков', 'title': 'Мастер и Маргарита', 'genre': 'Роман', 'pages': 480},
+    {'author': 'Харуки Мураками', 'title': 'Послемрак', 'genre': 'Роман', 'pages': 240},
+    {'author': 'Юкио Мисима', 'title': 'Жизнь на продажу', 'genre': 'Художественная проза', 'pages': 288},
+    {'author': 'Дж. Р. Р. Толкин', 'title': 'Властелин колец: Братство Кольца', 'genre': 'Фэнтези', 'pages': 530},
+    {'author': 'Даниэль Дефо', 'title': 'Робинзон Крузо', 'genre': 'Приключенческий роман', 'pages': 320},
+    {'author': 'Артур Конан Дойл', 'title': 'Собака Баскервилей', 'genre': 'Детектив', 'pages': 256},
+    {'author': 'Джейн Остин', 'title': 'Гордость и предубеждение', 'genre': 'Роман', 'pages': 400}
+]
+
+@app.route('/lab2/books/')
+def book_list():
+    return render_template('book.html', books=books)
