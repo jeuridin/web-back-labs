@@ -532,3 +532,29 @@ books = [
 @app.route('/lab2/books/')
 def book_list():
     return render_template('book.html', books=books)
+
+@app.route('/lab2/cars/')
+def cars():
+        cars = [
+            {'name': 'Toyota Corolla', 'description': 'надёжный и экономичный седан для города', 'image': 'toyota.jpg'},
+            {'name': 'Honda Civic', 'description': 'спортивный и практичный компактный автомобиль', 'image': 'civic.jpg'},
+            {'name': 'Ford Mustang', 'description': 'легендарный американский мускул-кар с мощным двигателем', 'image': 'mustang.jpg'},
+            {'name': 'Chevrolet Camaro', 'description': 'спортивное купе с агрессивным дизайном', 'image': 'camaro.jpg'},
+            {'name': 'BMW 3 Series', 'description': 'премиальный седан с отличной управляемостью', 'image': 'bmw.jpg'},
+            {'name': 'Mercedes-Benz C-Class', 'description': 'комфортный и стильный бизнес-седан', 'image': 'mercedes.jpg'},
+            {'name': 'Audi A4', 'description': 'элегантный и технологичный немецкий седан', 'image': 'audi.jpg'},
+            {'name': 'Volkswagen Golf', 'description': 'компактный хэтчбек с хорошей практичностью', 'image': 'golf.jpg'},
+            {'name': 'Hyundai Tucson', 'description': 'надёжный кроссовер для семьи', 'image': 'tucson.jpg'},
+            {'name': 'Kia Sportage', 'description': 'стильный и функциональный городской SUV', 'image': 'sportage.jpg'},
+            {'name': 'Nissan Rogue', 'description': 'удобный кроссовер с просторным салоном', 'image': 'nissan.jpg'},
+            {'name': 'Tesla Model 3', 'description': 'электромобиль с высокой автономностью и современными технологиями', 'image': 'tesla.jpg'},
+            {'name': 'Porsche 911', 'description': 'спортивный автомобиль с легендарной историей', 'image': 'porsche.jpg'},
+            {'name': 'Lamborghini Huracán', 'description': 'суперкар с мощным двигателем и впечатляющей скоростью', 'image': 'lambo.jpg'},
+            {'name': 'Ferrari F8 Tributo', 'description': 'итальянский спорткар с динамичным дизайном', 'image': 'ferrari.jpg'},
+            {'name': 'Mitsubishi Outlander', 'description': 'надёжный семейный кроссовер', 'image': 'mitsubishi.jpg'},
+            {'name': 'Subaru Forester', 'description': 'внедорожник с отличной проходимостью и безопасностью', 'image': 'subaru.jpg'},
+            {'name': 'Jeep Wrangler', 'description': 'легендарный внедорожник для бездорожья', 'image': 'jeep.jpg'},
+            {'name': 'Volvo XC90', 'description': 'премиальный SUV с высоким уровнем безопасности', 'image': 'volvo.jpg'},
+            {'name': 'Renault Clio', 'description': 'компактный и экономичный городской хэтчбек', 'image': 'clio.jpg'}
+        ]
+        return render_template('car.html', cars=cars)

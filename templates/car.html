@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Список машин</h1>
+    {% for car in cars %}
+        <div class="car">
+            <img src="{{ url_for('static', filename='image/' + car.image) }}" 
+                                alt="{{ car.name }}", style = "width: 60%; height: auto">
+            <h3>{{ car.name }}</h3>
+            <p>{{ car.description }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
