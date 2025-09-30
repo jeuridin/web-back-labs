@@ -413,7 +413,9 @@ def flowers(flower_id):
     if flower_id >= len(flower_list):
         abort(404)
     else:
-        return "цветок: " + flower_list[flower_id]
+        flower = flower_list[flower_id] 
+        all_flowers_url = url_for('flowers_all')
+        return render_template('flower.html', flower_id=flower_id, flower=flower, all_flowers_url=all_flowers_url)
     
 @app.route('/lab2/add_flower/<name>')
 def add_flower(name):
@@ -429,6 +431,56 @@ def add_flower(name):
     </body>
 </html>
 '''
+
+@app.route('/lab2/flowers/all')
+def flowers_all():
+    return f'''
+<!doctype html>
+<html>
+    <body>
+    <p>Всего цветов: {len(flower_list)}</p>
+    <p>Всего цветов: </p>
+    <ul>
+            {''.join(f'<li>{flower}</li>' for flower in flower_list)}
+            <a href="/lab2/f_cleaner">Очистка</a>
+        </ul>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/add_flower/')
+def add_flower2():
+    css = url_for('static', filename='main.css')
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="''' + css +'''">
+    </head>
+    <body>
+        <h1>Вы не задали имя цветка<h1>
+    </body>
+</html>
+''', 400
+
+@app.route('/lab2/f_cleaner')
+def f_cleaner():
+        global flower_list
+        flower_list = []
+        css = url_for('static', filename='main.css')
+        return '''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="''' + css +'''">
+    </head>
+    <body>
+        <h1>Список очищен. Можете перейти обратно на страницу со списком.</h1>
+        <a href="/lab2/flowers/all">Назад к списку</a>
+    </body>
+</html>
+'''
+
 
 @app.route('/lab2/example')
 def example():
@@ -451,3 +503,15 @@ def lab2():
 def filters():
     phrase = 'О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..'
     return render_template('filter.html', phrase=phrase)
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calc(a, b):
+    return render_template('calc.html', a=a, b=b)
+
+@app.route('/lab2/calc/')
+def calc2():
+    return redirect('/lab2/calc/1/1')
+
+@app.route('/lab2/calc/<int:a>/')
+def calc3(a):
+    return redirect(url_for('calc', a=a, b=1))
