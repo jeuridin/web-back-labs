@@ -7,7 +7,7 @@
     {% for car in cars %}
         <div class="car">
             <img src="{{ url_for('static', filename='image/' + car.image) }}" 
-                                alt="{{ car.name }}", style = "width: 60%; height: auto">
+                                style = "width: 30%; height: auto">
             <h3>{{ car.name }}</h3>
             <p>{{ car.description }}</p>
         </div>
