@@ -10,14 +10,10 @@
     <div>Список сделанных страниц</div>
     <ol>
         <li><a href="/lab3/cookie">Куки</a></li>
-    </ol>
-    <ol>
-        <li><a href="/lab3/form1">Форма</a></li>
-    </ol>
-    <ol>
-        <li><a href="/lab3/order.html">Заказ напитка</a></li>
-    </ol>
     <form action="{{ url_for('lab3.del_cookie') }}">
         <button>Очистка</button>
     </form>
+        <li><a href="/lab3/form1">Форма</a></li>
+        <li><a href="/lab3/order">Заказ напитка</a></li>
+    </ol>
 {% endblock %}
