@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='lab3.css')}}">
+{% endblock %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <div class="success">
+        <h1>Спасибо ваш заказ оплачен на сумму {{ price }}, ожидайте доставку! </h1>
+        <a href="/lab3/order">Заказать еще?</a>
+    </div>
+{% endblock %}
