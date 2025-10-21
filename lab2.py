@@ -23,24 +23,24 @@ def flowers(flower_id):
     if flower_id < 0 or flower_id >= len(flower_list):
         abort(404)
     else:
-        return render_template('flower_detail.html',
+        return render_template('lab2/flower_detail.html',
                                 flower=flower_list[flower_id], flower_id=flower_id)
     
 @lab2.route('/lab2/add_flower/<name>/<int:price>')
 def add_flower(name, price):
     flower_list.append({'name': name, 'price': price})
-    return render_template('add_flower.html', name=name, price=price)
+    return render_template('/lab2/add_flower.html', name=name, price=price)
 
 @lab2.route('/lab2/flowers/all')
 def flowers_all():
-    return render_template('flowers_all.html', flower_list=flower_list)
+    return render_template('lab2/flowers_all.html', flower_list=flower_list)
 
 @lab2.route('/lab2/add_flower')
 def add_flower_simple():
     name = request.args.get('name')
     price = request.args.get('price', type=int)
     if not name or price is None:
-        return render_template('add_error.html')
+        return render_template('/lab2/add_error.html')
     flower_list.append({'name': name, 'price': price})
     return redirect(url_for('lab2.flowers_all'))
 
@@ -48,7 +48,7 @@ def add_flower_simple():
 @lab2.route('/lab2/f_cleaner')
 def f_cleaner():
         flower_list.clear()
-        return render_template('clear_flowers.html')
+        return render_template('lab2/clear_flowers.html')
 
 @lab2.route('/lab2/delete_flower/<int:flower_id>')
 def delete_flower(flower_id):
@@ -67,21 +67,21 @@ def example():
         {'name': 'мандарины', 'price': 95},
         {'name': 'манго', 'price': 321}
     ]
-    return render_template('example.html', name=name, lab_num=lab_num, kurs=kurs, 
+    return render_template('lab2/example.html', name=name, lab_num=lab_num, kurs=kurs, 
                            group=group, fruits=fruits)
 
 @lab2.route('/lab2/')
 def lab2_menu():
-    return render_template('lab2.html')
+    return render_template('/lab2/lab2.html')
 
 @lab2.route('/lab2/filters')
 def filters():
     phrase = 'О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..'
-    return render_template('filter.html', phrase=phrase)
+    return render_template('lab2/filter.html', phrase=phrase)
 
 @lab2.route('/lab2/calc/<int:a>/<int:b>')
 def calc(a, b):
-    return render_template('calc.html', a=a, b=b)
+    return render_template('lab2/calc.html', a=a, b=b)
 
 @lab2.route('/lab2/calc/')
 def calc2():
@@ -106,7 +106,7 @@ books = [
 
 @lab2.route('/lab2/books/')
 def book_list():
-    return render_template('book.html', books=books)
+    return render_template('lab2/book.html', books=books)
 
 @lab2.route('/lab2/cars/')
 def cars():
@@ -132,4 +132,4 @@ def cars():
             {'name': 'Volvo XC90', 'description': 'премиальный SUV с высоким уровнем безопасности', 'image': 'volvo.jpg'},
             {'name': 'Renault Clio', 'description': 'компактный и экономичный городской хэтчбек', 'image': 'clio.jpg'}
         ]
-        return render_template('car.html', cars=cars)
+        return render_template('lab2/car.html', cars=cars)

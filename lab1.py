@@ -33,8 +33,8 @@ def lab():
 
 @lab1.route('/lab1/image')
 def image():
-    path = url_for("static", filename="priroda.jpg")
-    css_path = url_for('static', filename='main.css')
+    path = url_for("static", filename="/lab1/priroda.jpg")
+    css_path = url_for('static', filename='/lab1/main.css')
     return '''
 <!doctype html>
 <html>

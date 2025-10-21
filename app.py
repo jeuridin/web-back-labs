@@ -12,7 +12,7 @@ app.register_blueprint(lab3)
 visit_log = []
 @app.errorhandler(404)
 def not_found(err):
-    error404 = url_for("static", filename="error.jpg")
+    error404 = url_for("static", filename="/lab1/error.jpg")
     time = datetime.datetime.today()
     client_ip = request.remote_addr
     url = request.url
