@@ -140,3 +140,79 @@ def reset_settings():
     resp.delete_cookie('font_size')
     resp.delete_cookie('font_family')
     return resp
+
+@lab3.route('/lab3/dop', methods=['GET', 'POST'])
+def dop():
+    phones = [
+        {"name": "iPhone 15 Pro", "price": 129990, "brand": "Apple", "color": "Титановый синий", "storage": 256, "screen": 6.1},
+        {"name": "iPhone 15", "price": 89990, "brand": "Apple", "color": "Черный", "storage": 128, "screen": 6.1},
+        {"name": "Galaxy S24 Ultra", "price": 119990, "brand": "Samsung", "color": "Серый", "storage": 512, "screen": 6.8},
+        {"name": "Galaxy A54", "price": 34990, "brand": "Samsung", "color": "Белый", "storage": 128, "screen": 6.4},
+        {"name": "Redmi Note 13 Pro", "price": 29990, "brand": "Xiaomi", "color": "Синий", "storage": 256, "screen": 6.67},
+        {"name": "Poco X6 Pro", "price": 27990, "brand": "Xiaomi", "color": "Желтый", "storage": 256, "screen": 6.67},
+        {"name": "Pixel 8 Pro", "price": 79990, "brand": "Google", "color": "Черный", "storage": 128, "screen": 6.7},
+        {"name": "Nothing Phone 2", "price": 49990, "brand": "Nothing", "color": "Белый", "storage": 256, "screen": 6.7},
+        {"name": "OnePlus 12", "price": 69990, "brand": "OnePlus", "color": "Зеленый", "storage": 256, "screen": 6.82},
+        {"name": "Realme GT 5", "price": 45990, "brand": "Realme", "color": "Серебристый", "storage": 512, "screen": 6.74},
+        {"name": "Vivo X100", "price": 59990, "brand": "Vivo", "color": "Синий", "storage": 256, "screen": 6.78},
+        {"name": "Oppo Find X6", "price": 74990, "brand": "Oppo", "color": "Зеленый", "storage": 512, "screen": 6.74},
+        {"name": "Honor Magic 5", "price": 52990, "brand": "Honor", "color": "Фиолетовый", "storage": 256, "screen": 6.73},
+        {"name": "Huawei P60", "price": 64990, "brand": "Huawei", "color": "Черный", "storage": 256, "screen": 6.67},
+        {"name": "ASUS ROG Phone 8", "price": 89990, "brand": "ASUS", "color": "Черный", "storage": 512, "screen": 6.78},
+        {"name": "Nokia G42", "price": 19990, "brand": "Nokia", "color": "Фиолетовый", "storage": 128, "screen": 6.56},
+        {"name": "Motorola Edge 40", "price": 42990, "brand": "Motorola", "color": "Синий", "storage": 256, "screen": 6.55},
+        {"name": "Sony Xperia 5 V", "price": 79990, "brand": "Sony", "color": "Черный", "storage": 256, "screen": 6.1},
+        {"name": "Tecno Camon 20", "price": 15990, "brand": "Tecno", "color": "Зеленый", "storage": 128, "screen": 6.67},
+        {"name": "Infinix Note 30", "price": 17990, "brand": "Infinix", "color": "Золотой", "storage": 256, "screen": 6.78}
+        ]
+    
+    all_prices = []
+    for phone in phones:
+        all_prices.append(phone['price'])
+
+    min_price_all = min(all_prices)
+    max_price_all = max(all_prices)
+
+    min_price = request.form.get('min_price', '')
+    max_price = request.form.get('max_price', '')
+
+    if request.form.get('reset'):
+        min_price = ''
+        max_price = ''
+
+    filtered_phones = phones
+
+    if min_price or max_price:
+        
+        if min_price and max_price:
+            if float(min_price) > float(max_price):
+                temp = min_price
+                min_price = max_price
+                max_price = temp
+        
+        if min_price:
+            temp_phones = []
+            for phone in filtered_phones:
+                if phone['price'] >= float(min_price):
+                    temp_phones.append(phone)
+            filtered_phones = temp_phones
+        
+        if max_price:
+            temp_phones = []
+            for phone in filtered_phones:
+                if phone['price'] <= float(max_price):
+                    temp_phones.append(phone)
+            filtered_phones = temp_phones
+
+    response = make_response(render_template('lab3/dop.html', phones=filtered_phones, min_price=min_price, max_price=max_price, 
+                        min_price_all=min_price_all, max_price_all=max_price_all, count=len(filtered_phones)))
+
+    if not request.form.get('reset'):
+        if min_price:
+            response.set_cookie('min_price', min_price)
+        if max_price:
+            response.set_cookie('max_price', max_price)
+    else:
+        response.set_cookie('min_price', '', expires=0)
+        response.set_cookie('max_price', '', expires=0)
+    return response
