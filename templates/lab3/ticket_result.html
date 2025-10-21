@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<style>
+.ticket {
+    width: 400px;
+    background: white;
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid #2c5530;
+    border-radius: 10px;
+}
+
+.ticket-header {
+    text-align: center;
+    color: #2c5530;
+    border-bottom: 2px solid #2c5530;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.ticket-info {
+    margin-bottom: 15px;
+}
+
+.ticket-label {
+    font-weight: bold;
+}
+
+.child-ticket {
+    background-color: #fffacd;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c5530;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px dashed #2c5530;
+    border-radius: 5px;
+}
+
+.price-breakdown {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.total-price {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <div class="ticket">
+        <div class="ticket-header">
+            <h1>Железнодорожный билет</h1>
+        </div>
+
+        {% if age < 18 %}
+        <div class="child-ticket">
+            Детский билет
+        </div>
+        {% endif %}
+
+        <div class="ticket-info">
+            <span class="ticket-label">Пассажир:</span>
+            <span class="ticket-value">{{ fio }}</span>
+        </div>
+
+        <div class="ticket-info">
+            <span class="ticket-label">Возраст:</span>
+            <span class="ticket-value">{{ age }} лет</span>
+        </div>
+
+        <div class="ticket-info">
+            <span class="ticket-label">Маршрут:</span>
+            <span class="ticket-value">{{ viezd }} → {{ naznachenie }}</span>
+        </div>
+
+        <div class="ticket-info">
+            <span class="ticket-label">Дата поездки:</span>
+            <span class="ticket-value">{{ data }}</span>
+        </div>
+
+        <div class="ticket-info">
+            <span class="ticket-label">Полка:</span>
+            <span class="ticket-value">
+                {% if polka == 'bottom' %}нижняя
+                {% elif polka == 'top' %}верхняя
+                {% elif polka == 'top-bok' %}верхняя боковая
+                {% elif polka == 'bottom-bok' %}нижняя боковая
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="ticket-info">
+            <span class="ticket-label">Дополнительные услуги:</span>
+            <span class="ticket-value">
+                {% if belie %} 
+                    Бельё<br>
+                {% endif %}
+                {% if bagazh %} 
+                    Багаж<br>
+                {% endif %}
+                {% if strahovka %} 
+                    Страховка<br>
+                {% endif %}
+                {% if not belie and not bagazh and not strahovka %}—{% endif %}
+            </span>
+        </div>
+
+        <div class="price-breakdown">
+            <div class="price-item">
+                <span>Базовый тариф:</span>
+                <span>{{ base_price }} руб.</span>
+            </div>
+            {% if polka_price > 0 %}
+            <div class="price-item">
+                <span>Доплата за полку:</span>
+                <span>+{{ polka_price }} руб.</span>
+            </div>
+            {% endif %}
+            {% if belie %}
+            <div class="price-item">
+                <span>Бельё:</span>
+                <span>+75 руб.</span>
+            </div>
+            {% endif %}
+            {% if bagazh %}
+            <div class="price-item">
+                <span>Багаж:</span>
+                <span>+250 руб.</span>
+            </div>
+            {% endif %}
+            {% if strahovka %}
+            <div class="price-item">
+                <span>Страховка:</span>
+                <span>+150 руб.</span>
+            </div>
+            {% endif %}
+            <div class="total-price">
+                <span>Итого:</span>
+                <span>{{ total_price }} руб.</span>
+            </div>
+        </div>
+
+        <div class="price">
+            К оплате: {{ total_price }} руб.
+        </div>
+    </div>
+{% endblock %}

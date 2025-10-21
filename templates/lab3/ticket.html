@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/lab3/ticket.css')}}">
+{% endblock %}
+
+{% block lab%}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <div class="ticket">
+        <form>
+            <h1>Железнодорожный билет</h1>
+            <div>
+                <label>Ваше ФИО:<span class="required">*</span></label>
+                <input type="text" name="fio" required>
+            </div>
+            <div>
+                <label>Полка:<span class="required">*</span></label>
+                <select name="polka" required>
+                    <option value="bottom">нижняя</option>
+                    <option value="top">верхняя</option>
+                    <option value="top-bok">верхняя боковая</option>
+                    <option value="bottom-bok">нижняя боковая</option>
+                </select>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" name="belie"> С бельем
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" name="bagazh"> С багажом
+            </div>
+            
+            <div>
+                <label>Возраст:<span class="required">*</span></label>
+                <input type="number" name="age" min="1" max="120" required>
+            </div>
+            <div>
+                <label>Пункт выезда:<span class="required">*</span></label>
+                <input type="text" name="viezd" required>
+            </div>
+            <div>
+                <label>Пункт назначения:<span class="required">*</span></label>
+                <input type="text" name="naznachenie" required>
+            </div>
+            <div>
+                <label>Дата поездки:<span class="required">*</span></label>
+                <input type="date" name="data" required>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" name="strahovka"> Нужна страховка
+            </div>
+            <button type="submit">Оплатить</button>
+        </form>
+    </div>
+{% endblock %}
