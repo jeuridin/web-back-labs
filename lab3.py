@@ -204,15 +204,15 @@ def dop():
                     temp_phones.append(phone)
             filtered_phones = temp_phones
 
-    response = make_response(render_template('lab3/dop.html', phones=filtered_phones, min_price=min_price, max_price=max_price, 
+    resp = make_response(render_template('lab3/dop.html', phones=filtered_phones, min_price=min_price, max_price=max_price, 
                         min_price_all=min_price_all, max_price_all=max_price_all, count=len(filtered_phones)))
 
     if not request.form.get('reset'):
         if min_price:
-            response.set_cookie('min_price', min_price)
+            resp.set_cookie('min_price', min_price)
         if max_price:
-            response.set_cookie('max_price', max_price)
+            resp.set_cookie('max_price', max_price)
     else:
-        response.set_cookie('min_price', '', expires=0)
-        response.set_cookie('max_price', '', expires=0)
-    return response
+        resp.set_cookie('min_price', '', expires=0)
+        resp.set_cookie('max_price', '', expires=0)
+    return resp
