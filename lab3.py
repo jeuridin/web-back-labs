@@ -76,7 +76,7 @@ def settings():
     bg_color = request.args.get('bg_color')
     font_size = request.args.get('font_size')
     font_family = request.args.get('font_family')
-    if any([color, bg_color, font_size]):
+    if any([color, bg_color, font_size, font_family]):
         resp = make_response(redirect('/lab3/settings'))
         if color:
             resp.set_cookie('color', color)
