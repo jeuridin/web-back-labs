@@ -140,6 +140,7 @@ def reset_settings():
     resp.delete_cookie('font_size')
     resp.delete_cookie('font_family')
     return resp
+from flask import request, make_response, render_template
 
 @lab3.route('/lab3/dop', methods=['GET', 'POST'])
 def dop():
@@ -164,48 +165,38 @@ def dop():
         {"name": "Sony Xperia 5 V", "price": 79990, "brand": "Sony", "color": "Черный", "storage": 256, "screen": 6.1},
         {"name": "Tecno Camon 20", "price": 15990, "brand": "Tecno", "color": "Зеленый", "storage": 128, "screen": 6.67},
         {"name": "Infinix Note 30", "price": 17990, "brand": "Infinix", "color": "Золотой", "storage": 256, "screen": 6.78}
-        ]
+    ]
     
-    all_prices = []
-    for phone in phones:
-        all_prices.append(phone['price'])
-
+    all_prices = [phone['price'] for phone in phones]
     min_price_all = min(all_prices)
     max_price_all = max(all_prices)
 
-    min_price = request.form.get('min_price', '')
-    max_price = request.form.get('max_price', '')
+    if request.method == 'POST':
+        min_price = request.form.get('min_price', '')
+        max_price = request.form.get('max_price', '')
+    else:
+        min_price = request.cookies.get('min_price', '')
+        max_price = request.cookies.get('max_price', '')
 
     if request.form.get('reset'):
         min_price = ''
         max_price = ''
 
     filtered_phones = phones
-
     if min_price or max_price:
-        
         if min_price and max_price:
             if float(min_price) > float(max_price):
-                temp = min_price
-                min_price = max_price
-                max_price = temp
+                min_price, max_price = max_price, min_price
         
         if min_price:
-            temp_phones = []
-            for phone in filtered_phones:
-                if phone['price'] >= float(min_price):
-                    temp_phones.append(phone)
-            filtered_phones = temp_phones
-        
+            filtered_phones = [phone for phone in filtered_phones if phone['price'] >= float(min_price)]
         if max_price:
-            temp_phones = []
-            for phone in filtered_phones:
-                if phone['price'] <= float(max_price):
-                    temp_phones.append(phone)
-            filtered_phones = temp_phones
+            filtered_phones = [phone for phone in filtered_phones if phone['price'] <= float(max_price)]
 
-    resp = make_response(render_template('lab3/dop.html', phones=filtered_phones, min_price=min_price, max_price=max_price, 
-                        min_price_all=min_price_all, max_price_all=max_price_all, count=len(filtered_phones)))
+    resp = make_response(render_template(
+        'lab3/dop.html', phones=filtered_phones, min_price=min_price, max_price=max_price,
+        min_price_all=min_price_all, max_price_all=max_price_all, count=len(filtered_phones)
+    ))
 
     if not request.form.get('reset'):
         if min_price:
@@ -215,4 +206,5 @@ def dop():
     else:
         resp.set_cookie('min_price', '', expires=0)
         resp.set_cookie('max_price', '', expires=0)
+
     return resp
