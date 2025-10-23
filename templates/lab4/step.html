@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block lab%}Лабораторная работа 4{% endblock %}
+
+{% block main %}
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% else %}
+        <h1>Возведение числа в степень</h1>
+        {{ x1 }}<sup>{{ x2 }}</sup> = {{ result }}
+    {% endif %}
+{% endblock%}

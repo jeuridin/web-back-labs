@@ -20,3 +20,82 @@ def div():
     x2 = int(x2)
     result = x1 / x2
     return render_template('lab4/div.html', x1=x1, x2=x2, result=result)
+
+@lab4.route('/lab4/sl-form')
+def sl_form():
+    return render_template('lab4/sl_form.html')
+
+
+@lab4.route('/lab4/sl', methods=['POST'])
+def sl():
+    x1 = request.form.get('x1')
+    x2 = request.form.get('x2')
+    if x1 == '' and x2 == '':
+        result = 0
+        return render_template('lab4/sl.html', x1=0, x2=0, result=result)
+    if x1 == '':
+        result = int(x2)
+        return render_template('lab4/sl.html', x1=0, x2=x2, result=result)
+    if x2 == '':
+        result = int(x1)
+        return render_template('lab4/sl.html', x2=0, x1=x1, result=result)
+    x1 = int(x1)
+    x2 = int(x2)
+    result = x1 + x2
+    return render_template('lab4/sl.html', x1=x1, x2=x2, result=result)
+    
+@lab4.route('/lab4/umn-form')
+def umn_form():
+    return render_template('lab4/umn_form.html')
+
+@lab4.route('/lab4/umn', methods=['POST'])
+def umn():
+    x1 = request.form.get('x1')
+    x2 = request.form.get('x2')
+    if x1 == '' and x2 == '':
+        result = 0
+        return render_template('lab4/umn.html', x1=0, x2=0, result=result)
+    if x1 == '':
+        result = int(x2)
+        return render_template('lab4/umn.html', x1=1, x2=x2, result=result)
+    if x2 == '':
+        result = int(x1)
+        return render_template('lab4/umn.html', x2=1, x1=x1, result=result)
+    x1 = int(x1)
+    x2 = int(x2)
+    result = x1 * x2
+    return render_template('lab4/umn.html', x1=x1, x2=x2, result=result)
+
+
+@lab4.route('/lab4/vch-form')
+def vch_form():
+    return render_template('lab4/vch_form.html')
+
+
+@lab4.route('/lab4/vch', methods = ['POST'])
+def vch():
+    x1 = request.form.get('x1')
+    x2 = request.form.get('x2')
+    if x1 == '' or x2 == '':
+        return render_template('lab4/vch.html', error='Оба поля должны быть заполнены!')
+    x1 = int(x1)
+    x2 = int(x2)
+    result = x1 - x2
+    return render_template('lab4/vch.html', x1=x1, x2=x2, result=result)
+
+@lab4.route('/lab4/step-form')
+def step_form():
+    return render_template('lab4/step_form.html')
+
+@lab4.route('/lab4/step', methods= ['POST'])
+def step():
+    x1 = request.form.get('x1')
+    x2 = request.form.get('x2')
+    if x1 == '' or x2 == '':
+        return render_template('lab4/step.html', error='Оба поля должны быть заполнены!')
+    x1 = int(x1)
+    x2 = int(x2)
+    if x1 == 0 and x2 == 0:
+        return render_template('lab4/step.html', error='Оба поля должны быть заполнены!')
+    result = x1 ** x2
+    return render_template('lab4/step.html', x1=x1, x2=x2, result=result)

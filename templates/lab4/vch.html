@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+
 {% block lab %}Лабораторная работа 4{% endblock %}
 
 {% block main %}
     {% if error %}
         <p style="color:red;">{{ error }}</p>
     {% else %}
-    <h1>Деление чисел</h1>
-    {{ x1 }} / {{ x2 }} = {{ result }}
+    <h1>Вычитание чисел</h1>
+    {{ x1 }} - {{ x2 }} = {{ result }}
     {% endif %}
-{% endblock %}
+{% endblock%}
