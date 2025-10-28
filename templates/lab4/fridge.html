@@ -1,0 +1,24 @@
+{% extends 'base.html'%}
+{% block lab %}Лабораторная работа 6{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/lab4/lab.css')}}">
+{% endblock %}
+
+{% block main %}
+    <form action="/lab4/fridge" method="post">
+        <h1>Холодильник</h1>
+        <div>
+            <p>Температура холодильника:</p>
+            <input type="number" name="temp" id="temp"> &deg;C
+            <button type="submit"> Установить </button>
+        </div>
+        {% if error %}
+        <p>{{ error }}</p>
+        {% endif %}
+        
+
+    {% if snowflakes %}
+        <p>{{ "❄️" * snowflakes }}</p>
+    {% endif %}
+    </form>
+{% endblock %}

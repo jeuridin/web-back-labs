@@ -4,7 +4,7 @@
 
 {% block main %} 
     {% if authorized %}
-        <h1>Добро пожаловать, {{ login }}!</h1>
+        <h1>Добро пожаловать, {{ name }}!</h1>
         <div>
             <form action="/lab4/logout", method="post">
                 <button>Выход</button>
@@ -16,16 +16,36 @@
         <form method="post">
             <div>
                 <label for="login">Пользователь:</label>
-                <input type="text" id="login" name="login">
+                <input type="text" id="login" name="login" value="{{ login }}">
             </div>
+        </div>
             <div>
                 <label for="password">Пароль:</label>
                 <input type="password" id="password" name="password">
             </div>
-            <div>{{ error }}</div>
+        <div>
+            <label>Пол:</label>
+            <select name="sex">
+                <option value="male" {{ sex == 'male' and 'selected' }}>Мужчина</option>
+                <option value="female" {{ sex == 'female' and 'selected' }}>Женщина</option>
+            </select>
+        </div>
+            {% if error %}
+            <div>
+                <p style="background-color: red; color: black; width: 240px; padding: 10px; 
+                        margin-top: 10px; margin-left: 5px; margin-bottom: 20px; 
+                        border-radius: 15px; text-align: center; 
+                        font-family: 'Times New Roman'; font-weight: bold;">
+                    {{ error }}
+                </p>
+            </div>
+            {% endif %}
+
+            </p>
+            </div>
             <div>
                 <button type="submit">Войти</button>
-                <button type="reset">Отмена</button>
+                <a href="/lab4/login"><button type="button">Отмена</button></a>
             </div>
         </form>
         {% endif%}

@@ -120,12 +120,12 @@ def tree():
 
 
 users = [
-    {'login': 'alex', 'password': '123'},
-    {'login': 'bob', 'password': '555'},
-    {'login': 'janna', 'password': '777'},
-    {'login': 'alice', 'password': '444'},
-    {'login': 'lily', 'password': '888'},
-    {'login': 'john', 'password': '444'}
+    {'login': 'alex', 'name': 'Алекс', 'sex': 'мужской', 'password': '123',},
+    {'login': 'bob', 'name': 'Боб', 'sex': 'мужской', 'password': '555'},
+    {'login': 'janna', 'name': 'Жанна', 'sex': 'женский', 'password': '777'},
+    {'login': 'alice', 'name': 'Элис', 'sex': 'женский', 'password': '444'},
+    {'login': 'lily', 'name': 'Лили', 'sex': 'женский', 'password': '888'},
+    {'login': 'john', 'name': 'Джон', 'sex': 'мужской', 'password': '444'}
 ]
 
 
@@ -135,21 +135,64 @@ def login():
         if 'login' in session:
             authorized=True
             login = session['login']
+            name = session.get('name', '')
         else:
             authorized=False
             login = ''
-        return render_template('lab4/login.html', authorized=authorized, login=login)
+            name = ''
+        return render_template('lab4/login.html', authorized=authorized, login=login, name=name)
     
     login = request.form.get('login')
+    name = request.form.get('name')
     password = request.form.get('password')
+    sex = request.form.get('sex')
+    if not login and not password:
+        error = 'Не введён логин и пароль!'
+        return render_template('lab4/login.html', error=error, authorized=False, login=login, name=name)
+    elif not password:
+        error = 'Не введен пароль!'
+        return render_template('lab4/login.html', error=error, authorized=False, login=login, name=name)
+    elif not login:
+        error = 'Не введен логин!'
+        return render_template('lab4/login.html', error=error, authorized=False, login=login, name=name)
     for user in users:
         if login == user['login'] and password == user['password']:
             session['login'] = login
+            session['name'] = user['name']
             return redirect('/lab4/login')
-    error = 'Не верный логин и/или пароль'
-    return render_template('lab4/login.html', error=error, authorized=False)
+    error = 'Неверный логин и/или пароль!'
+    return render_template('lab4/login.html', error=error, authorized=False, login=login, name=name)
 
 @lab4.route('/lab4/logout', methods=['POST'])
 def logout():
     session.pop('login', None)
     return redirect('/lab4/login')
+
+
+@lab4.route('/lab4/fridge', methods=['GET', 'POST'])
+def fridge():
+    error = None
+    snowflakes = 0
+    if request.method == 'POST':
+        temp = request.form.get('temp')
+        if not temp:
+            error = 'Ошибочка'
+            return render_template('lab4/fridge.html', error=error)
+        else:
+            temp = int(temp)
+            if temp <= -12:
+                error = "Не удалось установить температуру — слишком низкое значение."
+            elif temp >= -1:
+                error = "Не удалось установить температуру — слишком высокое значение."
+            else:
+                if temp >= -12 and temp <= -9:
+                    error = f"Установлена температура: { temp }°С"
+                    snowflakes = 3
+                elif temp >= -8 and temp <= -5:
+                    error = f"Установлена температура: { temp }°С"
+                    snowflakes = 2
+                else:
+                    error = f"Установлена температура: { temp }°С"
+                    snowflakes = 1
+            return render_template('lab4/fridge.html', error=error, snowflakes=snowflakes)
+    return render_template('lab4/fridge.html', error=error, snowflakes=snowflakes)
