@@ -3,5 +3,20 @@
 {% block lab %}Лабораторная работа 4{% endblock %}
 
 {% block main %}
-    
+    <form action="/lab4/pay" method="POST">
+        <div>
+            <label for="/lab4/zerno">
+                <select name="zerno" id="zerno">
+                    <option value="" disabled selected>Не выбрано</option>
+                    <option value="yachmen">Ячмень </option>
+                    <option value="ovyos">Овёс</option>
+                    <option value="pshenitsa">Пшеница</option>
+                    <option value="rozh">Рожь</option>
+                </select>
+            </label>
+                <p>Вес заказа (в тоннах):</p>
+                <input type="number" name="ves" id="ves">
+                <button type="submit">Заказать</button>
+        </div>
+    </form>
 {% endblock %}

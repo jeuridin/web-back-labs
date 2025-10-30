@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 4{% endblock%}
+
+{% block main%}
+    {% if error %}
+        {{ error }}
+    {% else %}
+    <div>
+        Заказ успешно сформирован. Вы заказали {{ zerno_name }}. Вес: {{ ves }} т. Сумма к оплате: {{ price }} руб
+    </div>
+    <div>
+        {% if skidka %}
+            {{ skidka }}. Размер скидки: {{razmer_skidki}} рублей
+        {% endif %}
+    </div>
+    {% endif %}
+{% endblock%}

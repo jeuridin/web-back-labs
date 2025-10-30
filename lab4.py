@@ -196,3 +196,42 @@ def fridge():
                     snowflakes = 1
             return render_template('lab4/fridge.html', error=error, snowflakes=snowflakes)
     return render_template('lab4/fridge.html', error=error, snowflakes=snowflakes)
+
+
+@lab4.route('/lab4/zerno')
+def zerno():
+    return render_template('lab4/zerno.html')
+
+@lab4.route('/lab4/pay', methods=['GET', 'POST'])
+def pay():
+    error = None
+    price = None
+    zerno_name = None
+    ves = None
+    skidka = None
+    razmer_skidki = 0
+
+    if request.method == 'POST':
+        zerno = request.form.get('zerno')
+        ves = request.form.get('ves')
+        if not zerno:
+            return render_template('lab4/pay.html', error='Не выбрано зерно!!')
+        elif not ves:
+            return render_template('lab4/pay.html', error='Не введен вес!!')
+
+        else:
+            ves = int(ves)
+            prices = {'yachmen':12000, 'ovyos':8500, 'pshenitsa':9000, 'rozh':15000}
+            names = {'yachmen':'Ячмень', 'ovyos':'Овёс', 'pshenitsa':'Пшеница', 'rozh':'Рожь'}
+            price = ves * prices[zerno]
+            zerno_name = names[zerno]
+
+            if ves <= 0:
+                return render_template('lab4/pay.html', error='Не корректно указан!!')
+            if ves > 100:
+                return render_template('lab4/pay.html', error='Такого объёма сейчас нет в наличии')
+            if ves > 10:
+                razmer_skidki = (price * 10) / 100
+                price = price - razmer_skidki
+                skidka = 'Применена скидка за большой объём'
+    return render_template('lab4/pay.html', price=price, zerno_name=zerno_name, ves=ves, error=error, skidka=skidka)
