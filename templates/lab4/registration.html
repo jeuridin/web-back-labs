@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{% block main %}
+    {% if error %}
+        <div style="color:red; margin-bottom:10px;">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+        <h1>Регистрация</h1>
+        <div>
+            <label for="login">Имя:</label>
+            <input type="text" id="name" name="name" value="{{ name }}">
+        </div>
+        <div>
+            <label for="login">Логин:</label>
+            <input type="text" id="login" name="login" value="{{ login }}">
+        </div>
+        <div>
+            <label>Пароль</label>
+            <input name="password" type="password" required>
+        </div>
+        <div>
+            <label>Подтвердите пароль</label>
+            <input name="password_confirm" type="password" required>
+        </div>
+        <div>
+            <label>Пол:</label>
+            <select name="sex">
+                <option value="male" {{ sex == 'male' and 'selected' }}>Мужчина</option>
+                <option value="female" {{ sex == 'female' and 'selected' }}>Женщина</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">Зарегистрироваться</button>
+            <a href="/lab4/login"><button type="button">Отмена</button></a>
+        </div>
+        <div>
+            <a href="/lab4/login"><button type="button">Уже есть аккаунт?</button></a>
+        </div>
+    </form>
+{% endblock %}
