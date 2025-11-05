@@ -269,7 +269,6 @@ def registration():
     session['name'] = name
 
     return redirect('/lab4/login')
-
 @lab4.route('/lab4/list', methods=['GET', 'POST'])
 def user_list():
     if 'login' not in session:
@@ -281,11 +280,17 @@ def user_list():
         action = request.form.get('action')
         if action == 'delete':
             global users
-            users = [u for u in users if u['login'] != current_user]
+            new_users = []
+            for u in users:
+                if u['login'] != current_user:
+                    new_users.append(u)
+            users = new_users
+
             session.pop('login', None)
             session.pop('name', None)
             session['info'] = 'Ваш аккаунт удалён'
             return redirect('/lab4/login')
+
         elif action == 'edit':
             new_login = request.form.get('login')
             new_name = request.form.get('name')
