@@ -136,7 +136,8 @@ def login():
         login = session.get('login', '')
         name = session.get('name', '')
         error = session.pop('error', None)
-        return render_template('lab4/login.html', authorized=authorized, login=login, name=name, error=error)    
+        sex = request.form.get('sex', '')
+        return render_template('lab4/login.html', authorized=authorized, login=login, name=name, error=error, sex=sex)    
     login = request.form.get('login')
     name = request.form.get('name')
     password = request.form.get('password')
@@ -168,8 +169,6 @@ def logout():
 
 @lab4.route('/lab4/fridge', methods=['GET', 'POST'])
 def fridge():
-    error = None
-    snowflakes = 0
     if request.method == 'POST':
         temp = request.form.get('temp')
         if not temp:
@@ -215,7 +214,6 @@ def pay():
             return render_template('lab4/pay.html', error='Не выбрано зерно!!')
         elif not ves:
             return render_template('lab4/pay.html', error='Не введен вес!!')
-
         else:
             ves = int(ves)
             prices = {'yachmen':12000, 'ovyos':8500, 'pshenitsa':9000, 'rozh':15000}
