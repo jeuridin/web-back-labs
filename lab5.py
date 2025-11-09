@@ -24,7 +24,7 @@ def db_connect():
         dir_path = path.dirname(path.realpath(__file__))
         db_path = path.join(dir_path, "database.db")
         conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3
+        conn.row_factory = sqlite3.Row
         cur = conn.cursor()
     return conn, cur
 
@@ -114,10 +114,10 @@ def create():
     login_id = cur.fetchone()['id']
 
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute(f"INSERT INTO articles ((login_id, title, article_text) \
+        cur.execute(f"INSERT INTO articles (login_id, title, article_text) \
                     VALUES (%s, %s, %s)", (login_id, title, article_text))
     else:
-        cur.execute(f"INSERT INTO articles ((login_id, title, article_text) \
+        cur.execute(f"INSERT INTO articles (login_id, title, article_text) \
                         VALUES (?, ?, ?)", (login_id, title, article_text))        
 
     db_close(conn, cur)
