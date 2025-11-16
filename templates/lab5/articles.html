@@ -7,15 +7,37 @@
         <p>{{ message }}</p>
     {% else %}
         <h1>Статьи</h1>
+        <div>
+            <a href="{{ url_for('lab5.public_articles') }}">Смотреть публичные статьи</a>
+        </div>
         {% for article in articles %}
-            <h2>{{ article['title'] }}</h2>
-            <blockquote>{{ article['article_text'] }}</blockquote>
-            <form action="{{ url_for('lab5.delete', article_id=article['id']) }}" method="post" style="display:inline;">
-                <button type="submit">Удалить</button>
-            </form>
-            <form action="{{ url_for('lab5.edit', article_id=article['id']) }}" method="get" style="display:inline;">
-                <button type="submit">Редактировать</button>
-            </form>
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+                {% if article['is_favorite'] %}
+                    <span style="font-weight: bold;">★ Избранная</span>
+                {% endif %}
+                {% if article['is_public'] %}
+                    <span style="color: green; font-weight: bold;">Публичная</span>
+                {% else %}
+                    <span style="color: gray;">Приватная</span>
+                {% endif %}
+                <h2>{{ article['title'] }}</h2>
+                <blockquote>{{ article['article_text'] }}</blockquote>
+                <form action="{{ url_for('lab5.favorite', article_id=article['id']) }}" method="post" style="display:inline;">
+                    <button type="submit">
+                        {% if article['is_favorite'] %}
+                            Убрать из избранного
+                        {% else %}
+                            Добавить в избранное
+                        {% endif %}
+                    </button>
+                </form>
+                <form action="{{ url_for('lab5.delete', article_id=article['id']) }}" method="post" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+                <form action="{{ url_for('lab5.edit', article_id=article['id']) }}" method="get" style="display:inline;">
+                    <button type="submit">Редактировать</button>
+                </form>
+            </div>
         {% endfor %}
     {% endif %}
-{% endblock %} 
+{% endblock %}

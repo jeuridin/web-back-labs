@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <h1>Публичные статьи</h1>
+    
+    {% if message %}
+        <p>{{ message }}</p>
+    {% else %}
+        {% for article in articles %}
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+                <h2>{{ article['title'] }}</h2>
+                <p>{{ article['article_text'] }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <a href="/lab5">На главную</a>
+{% endblock %}
