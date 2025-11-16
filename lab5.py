@@ -298,7 +298,6 @@ def favorite(article_id):
 
 @lab5.route('/lab5/public')
 def public_articles():
-    """Публичные статьи для всех"""
     conn, cur = db_connect()
 
     if current_app.config['DB_TYPE'] == 'postgres':
@@ -313,3 +312,4 @@ def public_articles():
         return render_template('lab5/public.html', articles=[], message="Публичных статей нет")
 
     return render_template('lab5/public.html', articles=articles)
+
