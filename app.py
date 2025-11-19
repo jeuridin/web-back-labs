@@ -101,6 +101,9 @@ def index():
             <li>
             <a href='/lab5'>Лабораторная работа 5</a>
             </li>
+            <li>
+            <a href='/lab6'>Лабораторная работа 6</a>
+            </li>
         </ol>
         </main>
         <footer>
