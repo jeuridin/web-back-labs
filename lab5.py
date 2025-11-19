@@ -42,7 +42,7 @@ def register():
     login = request.form.get('login')
     password = request.form.get('password')
     full_name = request.form.get('full_name')
-    if not (login or password or full_name):
+    if not login or not password or not full_name:
         return render_template('lab5/register.html', error='Заполните все поля')
     
     conn, cur = db_connect()
