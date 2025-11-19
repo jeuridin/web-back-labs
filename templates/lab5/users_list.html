@@ -16,7 +16,7 @@
             <tr>
                 <td align="center">{{ user['id'] }}</td>
                 <td>{{ user['login'] }}</td>
-                <td>{{ user['full_name'] or 'Не указано' }}</td>
+                <td>{{ user['full_name'] or user['name'] or 'Не указано' }}</td>
             </tr>
             {% endfor %}
         </table>
