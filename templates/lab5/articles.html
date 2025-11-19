@@ -11,7 +11,7 @@
             <a href="{{ url_for('lab5.public_articles') }}">Смотреть публичные статьи</a>
         </div>
         {% for article in articles %}
-            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; margin-bottom: 40px;">
                 {% if article['is_favorite'] %}
                     <span style="font-weight: bold;">★ Избранная</span>
                 {% endif %}
