@@ -2,6 +2,9 @@
 
 {% block lab %}Лабораторная работа 6{% endblock %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='lab6/lab6.css')}}">
+{% endblock %}
 {% block script %}
 <script>
 function getOfficeList() {
@@ -24,12 +27,12 @@ function getOfficeList() {
         const ul = document.getElementById('office-list');
         const totalElement = document.getElementById('total-price');
         const currentUser = "{{ session.get('login') }}";
+        ul.innerHTML = '';
         let totalPrice = 0;
         for(let i = 0; i < office_list.length; i++) {
             const office = office_list[i];
             const li = document.createElement('li');
             li.innerText = `${office.number}: ${office.tenant || 'свободен'} - ${office.price} RUB`;
-            const bookingButton = document.createElement('button');
             if (!office.tenant) {
                 const bookingButton = document.createElement('button');
                 bookingButton.innerText = 'зарезервировать';
@@ -83,7 +86,6 @@ function booking(officeNumber){
             }
         }
         else {
-            document.getElementById('office-list').innerHTML = '';
             getOfficeList();
         }
     });
@@ -129,7 +131,6 @@ function cancellation(officeNumber){
             }
         }
         else {
-            document.getElementById('office-list').innerHTML = '';
             getOfficeList();
         }
     });
