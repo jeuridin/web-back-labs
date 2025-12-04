@@ -26,12 +26,6 @@ function fillFilmList() {
             delButton.onclick = function(){
                 deleteFilm(i, films[i].title_ru);
             }
-            
-            function deleteFilm(id, title){
-                if(! confirm(`Вы точно хотите удалить фильм "${title}"?`))
-                    return;
-                fetch(`/lab7/rest-api/films/${id}`, {method: 'DELETE'})
-            }
 
             tdActions.append(editButton);
             tdActions.append(delButton);
@@ -44,4 +38,41 @@ function fillFilmList() {
             tbody.append(tr);
         }
     })
+}
+
+function showModal() {
+    document.querySelector('div.modal').style.display = 'block';
+}
+function hideModal() {
+        document.querySelector('div.modal').style.display = 'none';
+}
+function cancel() {
+    hideModal();
+}
+function addFilm() {
+    document.getElementById('id').value = '';
+    document.getElementById('title').value = '';
+    document.getElementById('title-ru').value = '';
+    document.getElementById('year').value = '';
+    document.getElementById('description').value = '';
+    showModal();
+}
+function sendFilm() {
+    const film = {
+        title: document.getElementById('title').value,
+        title_ru: document.getElementById('title-ru').value,
+        year: document.getElementById('year').value,
+        description: document.getElementById('description').value
+    }
+}
+
+function deleteFilm(id, title) {
+    if(! confirm(`Вы точно хотите удалить фильм "${title}"?`))
+        return;
+    fetch(`/lab7/rest-api/films/${id}`, {method: 'DELETE'})
+
+    .then(function() {
+        fillFilmList();
+        hideModal();
+    });
 }
