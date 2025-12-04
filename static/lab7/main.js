@@ -44,7 +44,7 @@ function showModal() {
     document.querySelector('div.modal').style.display = 'block';
 }
 function hideModal() {
-        document.querySelector('div.modal').style.display = 'none';
+    document.querySelector('div.modal').style.display = 'none';
 }
 function cancel() {
     hideModal();
@@ -64,6 +64,17 @@ function sendFilm() {
         year: document.getElementById('year').value,
         description: document.getElementById('description').value
     }
+    const url = `/lab7/rest-api/films`;
+    const method = 'POST';
+    fetch(url, {
+        method: 'POST',
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify(film)
+    })
+    .then(function(){
+        fillFilmList();
+        hideModal();
+    });
 }
 
 function deleteFilm(id, title) {
