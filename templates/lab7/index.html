@@ -4,22 +4,44 @@
 {% block script %}
     <script src="{{ url_for('static', filename='lab7/main.js')}}"></script>
     <style>
-        .modal {
-            display: none;
-            z-index: 100;
-            box-shadow: 3px 3px 5px black;
-            background: white;
-            width: 400px;
-            left: 50%;
-            top: 200px;
-            margin-left: -200px;
-            position: absolute;
-            padding: 20px;
-        }
-        .error-message {
-            color: red;
-        }
-    </style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px 10px;
+        text-align: left;
+        background: #fafafa;
+    }
+
+    button {
+        padding: 5px 12px;
+        margin: 3px;
+        border: 1px solid #777;
+        background: #eee;
+        border-radius: 4px;
+    }
+    .modal {
+        display: none;
+        z-index: 100;
+        box-shadow: 3px 3px 5px black;
+        background: white;
+        width: 400px;
+        left: 50%;
+        top: 200px;
+        margin-left: -200px;
+        position: absolute;
+        padding: 20px;
+        border-radius: 6px;
+    }
+    .error-message {
+        color: red;
+    }
+</style>
+
 {% endblock %}
 
 {% block main %}
