@@ -78,9 +78,9 @@ def api():
         office_number = data['params']
         conn, cur = db_connect()
         if current_app.config['DB_TYPE'] == 'postgres':
-            cur.execute(f"SELECT tenant FROM offices WHERE number = %s;", (office_number,))
+            cur.execute(f"SELECT tenant FROM offices WHERE number=%s;", (office_number,))
         else:
-            cur.execute(f"SELECT tenant FROM offices WHERE number = ?;", (office_number,))
+            cur.execute(f"SELECT tenant FROM offices WHERE number=?;", (office_number,))
         office = cur.fetchone()
         if not office:
             db_close(conn, cur)

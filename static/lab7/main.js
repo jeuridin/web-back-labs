@@ -22,13 +22,13 @@ function fillFilmList() {
             let editButton = document.createElement('button');
             editButton.innerText = 'редактировать';
             editButton.onclick = function() {
-                editFilm(i);
+                editFilm(films[i].id);
             };
             
             let delButton = document.createElement('button');
             delButton.innerText = 'удалить';
             delButton.onclick = function(){
-                deleteFilm(i, films[i].title_ru);
+                deleteFilm(films[i].id, films[i].title_ru);
             };
 
             tdActions.append(editButton);
@@ -46,6 +46,9 @@ function fillFilmList() {
 
 function showModal() {
     document.getElementById('description-error').innerText = '';
+    document.getElementById('title-error').innerText = '';
+    document.getElementById('year-error').innerText = '';
+    document.getElementById('title-ru-error').innerText = '';
     document.querySelector('div.modal').style.display = 'block';
 }
 function hideModal() {
@@ -88,6 +91,12 @@ function sendFilm() {
     .then(function(errors) {
         if(errors.description)
             document.getElementById('description-error').innerText = errors.description;
+        if(errors.year)
+            document.getElementById('year-error').innerText = errors.year;
+        if(errors.title)
+            document.getElementById('title-error').innerText = errors.title;
+        if(errors.title_ru)
+            document.getElementById('title-ru-error').innerText = errors.title_ru;
     });
 }
 

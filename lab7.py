@@ -1,105 +1,206 @@
-from flask import Blueprint, render_template, request, abort, jsonify
+from flask import Blueprint, render_template, request, make_response, redirect, session, current_app, abort, jsonify
+import psycopg2
+from datetime import datetime
+from psycopg2.extras import RealDictCursor
+import sqlite3
+from os import path
 
 lab7 = Blueprint('lab7', __name__)
+
+
+def db_connect():
+    if current_app.config['DB_TYPE'] == 'postgres':
+        conn = psycopg2.connect(
+                host = '127.0.0.1',
+                database = 'janna_azaryan_knowledge_base',
+                user = 'janna_azaryan_knowledge_base',
+                password = '123'
+            )
+        cur = conn.cursor(cursor_factory= RealDictCursor)
+    else:
+        dir_path = path.dirname(path.realpath(__file__))
+        db_path = path.join(dir_path, "database.db")
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+    return conn, cur
+
+def db_close(conn, cur):
+    conn.commit()
+    cur.close()
+    conn.close()
+
 
 @lab7.route('/lab7/')
 def main():
     return render_template('lab7/index.html')
 
-films = [
-    {
-        "title": "Interstellar",
-        "title_ru": "Интерстеллар",
-        "year": 2014,
-        "description": "Когда засуха, пыльные бури и вымирание растений \
-            приводят человечество к продовольственному кризису, коллектив \
-            исследователей и учёных отправляется сквозь червоточину \
-            (которая предположительно соединяет области пространства-времени \
-            через большое расстояние) в путешествие, чтобы превзойти прежние \
-            ограничения для космических путешествий человека и найти планету \
-            с подходящими для человечества условиями."
-    },
-    {
-        "title": "The Shawshank Redemption",
-        "title_ru": "Побег из Шоушенка",
-        "year": 1994,
-        "description": "Бухгалтер Энди Дюфрейн обвинён в убийстве собственной жены \
-        и её любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается \
-        с жестокостью и беззаконием, царящими по обе стороны решётки. Каждый, кто \
-        попадает в эти стены, становится их рабом до конца жизни. Но Энди, обладающий \
-        живым умом и доброй душой, находит подход как к заключённым, так и к охранникам, \
-        добиваясь их особого к себе расположения."
-    },
-    {
-        "title": "The Green Mile",
-        "title_ru": "Зеленая миля",
-        "year": 1999,
-        "description": "Пол Эджкомб — начальник блока смертников в тюрьме «Холодная гора», \
-        каждый из узников которого однажды проходит «зеленую милю» по пути к месту казни. \
-        Пол повидал много заключённых и надзирателей за время работы. Однако гигант \
-            Джон Коффи, обвинённый в страшном преступлении, стал одним из самых необычных обитателей блока."
-    },
-    {
-        "title": "Alvin and the Chipmunks",
-        "title_ru": "Элвин и бурундуки",
-        "year": 2007,
-        "description": "Жизнь композитора была одной черной полосой до тех пор, пока он \
-        не встретил трех живых поющих бурундуков: лидера Элвина, гения Саймона и \
-        феерического Теодора. Поначалу они плохо уживаются вместе, но в конце концов \
-        Дэйв принимает бурундуков и даже становится менеджером их рок-группы, которая собирает стадионы поклонников."
-    },
-    {
-        "title": "Inception",
-        "title_ru": "Начало",
-        "year": 2010,
-        "description": "Кобб – талантливый вор, лучший из лучших в опасном искусстве извлечения: он \
-        крадет ценные секреты из глубин подсознания во время сна, когда человеческий разум наиболее \
-        уязвим. Редкие способности Кобба сделали его ценным игроком в привычном к предательству мире \
-        промышленного шпионажа, но они же превратили его в извечного беглеца и лишили всего, что он \
-        когда-либо любил. И вот у Кобба появляется шанс исправить ошибки. Его последнее дело может \
-        вернуть все назад, но для этого ему нужно совершить невозможное – инициацию. Вместо идеальной \
-        кражи Кобб и его команда спецов должны будут провернуть обратное. Теперь их задача – не украсть \
-        идею, а внедрить ее. Если у них получится, это и станет идеальным преступлением..."
-    }
-]
-
 
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_all_films():
+    conn, cur = db_connect()
+    cur.execute(f"SELECT * FROM films ORDER BY id;")
+    rows = cur.fetchall()
+    db_close(conn, cur)
+    films = []
+    for row in rows:
+        films.append({
+            "id": row["id"],
+            "title": row["title"],
+            "title_ru": row["title_ru"],
+            "year": row["year"],
+            "description": row["description"]
+        })
     return jsonify(films)
+
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_films(id):
-    if id < 0 or id >= len(films):
-        abort(404) 
-    return jsonify(films[id])
+    conn, cur = db_connect()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM films WHERE id = %s;", (id,))
+    else:
+        cur.execute("SELECT * FROM films WHERE id = ?;", (id,))
+    row = cur.fetchone()
+    db_close(conn, cur)
 
+    if row is None:
+        abort(404)
+
+    film = {
+        "id": row["id"],
+        "title": row["title"],
+        "title_ru": row["title_ru"],
+        "year": row["year"],
+        "description": row["description"]
+    }
+
+    return jsonify(film)
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
-    if id < 0 or id >= len(films):
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM films WHERE id = %s;", (id,))
+    else:
+        cur.execute("SELECT id FROM films WHERE id = ?;", (id,))
+    
+    exists = cur.fetchone()
+    if not exists:
+        db_close(conn, cur)
         abort(404)
-    del films[id]
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("DELETE FROM films WHERE id = %s;", (id,))
+    else:
+        cur.execute("DELETE FROM films WHERE id = ?;", (id,))
+
+    db_close(conn, cur)
+
     return '', 204
+
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
-    if id < 0 or id >= len(films):
-        abort(404)
     film = request.get_json()
     if film['description'] == '':
         return jsonify({'description': 'Заполните описание'}), 400
-    
+    if len(film['description']) > 2000:
+        return jsonify({'description': 'Описание не должно превышать 2000 символов'}), 400
+
     if film['title'] == '':
         film['title'] = film['title_ru']
-    films[id] = film
-    return jsonify(films[id])
+    
+    if film['title'] == '' and film['title_ru'] == '':
+        return jsonify({'title': 'Заполните название'}), 400
+
+    if film['title_ru'] == '':
+        return jsonify({'title_ru': 'Заполните название'}), 400
+
+    current_year = datetime.now().year
+
+    if 'year' not in film or film['year'].strip() == '' or not film['year'].isdigit():
+        return jsonify({'year': 'Год должен быть числом'}), 400
+
+    year = int(film['year'])
+    if year < 1895 or year > current_year:
+        return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
+
+    conn, cur = db_connect()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("UPDATE films SET title=%s, title_ru=%s, year=%s, description=%s WHERE id=%s RETURNING *;", 
+                    (film['title'], film['title_ru'], film['year'], film['description'], id))
+        updated = cur.fetchone()
+        conn.commit()
+    else:
+        cur.execute("UPDATE films SET title=?, title_ru=?, year=?, description=? WHERE id=?;", 
+                    (film['title'], film['title_ru'], film['year'], film['description'], id))
+        conn.commit()
+
+        cur.execute("SELECT * FROM films WHERE id=?;", (id,))
+        updated = cur.fetchone()
+
+    if updated is None:
+        abort(404)
+
+    return jsonify({
+        "id": updated["id"],
+        "title": updated["title"],
+        "title_ru": updated["title_ru"],
+        "year": updated["year"],
+        "description": updated["description"]
+    })
 
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
     film = request.get_json()
     if film['description'] == '':
         return jsonify({'description': 'Заполните описание'}), 400
+    if len(film['description']) > 2000:
+        return jsonify({'description': 'Описание не должно превышать 2000 символов'}), 400
+
     if film['title'] == '':
         film['title'] = film['title_ru']
-    films.append(film)
-    return jsonify({'id': len(films) - 1}), 201
+    
+    if film['title'] == '' and film['title_ru'] == '':
+        return jsonify({'title': 'Заполните название'}), 400
+
+    if film['title_ru'] == '':
+        return jsonify({'title_ru': 'Заполните название'}), 400
+    
+    current_year = datetime.now().year
+
+    if 'year' not in film or film['year'].strip() == '' or not film['year'].isdigit():
+        return jsonify({'year': 'Год должен быть числом'}), 400
+
+    year = int(film['year'])
+    if year < 1895 or year > current_year:
+        return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
+        
+
+    conn, cur = db_connect()
+
+    if 'year' not in film or film['year'].strip() == '' or not film['year'].isdigit():
+        return jsonify({'year': 'Год должен быть числом'}), 400
+
+    year = int(film['year'])
+    if year < 1895 or year > current_year:
+        return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
+
+
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("INSERT INTO films (title, title_ru, year, description) VALUES (%s, %s, %s, %s) RETURNING id;", 
+                    (film['title'], film['title_ru'], film['year'], film['description']))
+        new_id = cur.fetchone()['id']
+        conn.commit()
+    else:
+        cur.execute("INSERT INTO films (title, title_ru, year, description) VALUES (?, ?, ?, ?);", 
+                    (film['title'], film['title_ru'], film['year'], film['description']))
+
+        conn.commit()
+        new_id = cur.lastrowid
+
+    db_close(conn, cur)
+
+    return jsonify({'id': new_id}), 201
