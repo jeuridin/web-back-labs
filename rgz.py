@@ -23,7 +23,7 @@ def db_connect():
         cur = conn.cursor(cursor_factory=RealDictCursor)
     else:
         dir_path = path.dirname(path.realpath(__file__))
-        db_path = path.join(dir_path, "database.db")
+        db_path = path.join(dir_path, "databasergz.db")
         conn = sqlite3.connect(db_path)
         conn.emp_factory = sqlite3.emp
         cur = conn.cursor()
