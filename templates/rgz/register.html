@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block lab %}РГЗ{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='rgz/main.js')}}"></script>
+{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='rgz/main.css')}}">
+{% endblock %}
+{% block main %}
+<div class="registerForm">
+    <h2>Регистрация кадровика</h2>
+
+    <form id="registerForm">
+        <div>
+            <label for="fullname">ФИО:</label>
+            <input type="text" id="fullname" required>
+        </div>
+        <div class="form-group">
+            <label for="username">Логин:</label>
+            <input type="text" id="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" required>
+        </div>
+
+        <button type="submit">Создать</button>
+    </form>
+
+    <p id="message"></p>
+</div>
+{% endblock %}
+

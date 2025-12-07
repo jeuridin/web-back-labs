@@ -1,0 +1,443 @@
+table {
+    border-collapse: collapse;
+    margin-bottom: 50px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    color: #5c4a6f;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+#load-more-btn {
+    display: block;
+    margin: 0 auto 50px auto;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    background: #896c85;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+#load-more-btn:hover {
+    background: #6b5166;
+    transform: translateY(-2px);
+}
+h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.menu button {
+    all: unset;
+    padding: 10px 20px;
+    background-color: #f5f0f5;
+    color: #896c85;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.25s ease;
+}
+
+.menu {
+    display: flex;
+    justify-content: right;
+    gap: 20px;
+    padding: 10px 0;
+    background-color:  rgb(108, 97, 145);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.menu a, .menu button, #menu-btn{
+    padding: 10px 20px;
+    background-color: #f5f0f5;
+    text-decoration: none;
+    color: #896c85;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all 0.25s ease;
+    position: relative;
+    font-size: 16px;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+    
+.registerForm {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff45;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.registerForm h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: normal;
+}
+
+#registerForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#registerForm div {
+    display: flex;
+    flex-direction: column;
+}
+
+#registerForm label {
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+#registerForm input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+#registerForm input:focus {
+    outline: none;
+    border-color: #4a6fa5;
+    box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.1);
+}
+
+#registerForm input:hover {
+    border-color: #bbb;
+}
+
+#registerForm button {
+    padding: 14px;
+    background-color: #4a6fa5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+#registerForm button:hover {
+    background-color: #896c85;
+}
+
+#registerForm button:active {
+    background-color: #896c85;
+    transform: translateY(1px);
+}
+
+#message {
+    text-align: center;
+    padding: 12px;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: none;
+}
+
+#message:not(:empty) {
+    display: block;
+}
+
+#message[style*="color:green"],
+#message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+
+#message[style*="color:red"],
+#message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+#registerForm button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#registerForm button:disabled:hover {
+    background-color: #cccccc;
+}
+
+form#addEmployeeForm {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+form#addEmployeeForm label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+form#addEmployeeForm input,
+form#addEmployeeForm select {
+    width: 100%;
+    padding: 6px 8px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+form#addEmployeeForm button {
+    padding: 10px 20px;
+    background-color: #896c85;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+form#addEmployeeForm button:hover {
+    background-color: #896c85;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: -6px;
+    margin-bottom: 6px;
+}
+
+#message {
+    text-align: center;
+    font-weight: bold;
+}
+
+
+input:focus, select:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 3px rgba(0,123,255,0.5);
+}
+
+.loginForm {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 25px 30px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.loginForm h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.loginForm .form-group {
+    margin-bottom: 15px;
+}
+
+.loginForm label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.loginForm input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.loginForm input:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+
+.loginForm button {
+    width: 100%;
+    padding: 10px;
+    background-color: #896c85;;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.loginForm button:hover {
+    background-color: #76356d;;
+}
+
+#message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    color: red;
+    font-size: 14px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#search-input {
+    width: 300px;
+    padding: 10px 10px;
+    margin: 0 5px 15px 90px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 6px 12px;
+    margin: 0 5px 15px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+
+table {
+    width: 90%;
+    margin: 0 auto 20px auto;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal > div {
+    max-width: 400px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+
+    font-size: 18px;
+}
+
+
+.modal label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.modal input, .modal select {
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
+    padding: 6px 8px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.modal button {
+    margin-right: 10px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal button:first-of-type {
+    background-color: #896c85;
+    color: white;
+}
+
+.modal button:first-of-type:hover {
+    background-color: #6282a5;
+}
+
+.modal button:last-of-type {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal button:last-of-type:hover {
+    background-color: #5a6268;
+}

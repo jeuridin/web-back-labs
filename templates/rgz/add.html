@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block lab %}Добавление сотрудника{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='rgz/main.js') }}" defer></script>
+{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='rgz/main.css')}}">
+{% endblock %}
+{% block main %}
+<form id="addEmployeeForm">
+    <label>ФИО: <input type="text" id="full_name" required></label><br>
+    <div id="fullname-error" class="error-message"></div>
+    <label>Должность: <input type="text" id="position" required></label><br>
+    <div id="position-error" class="error-message"></div>
+    <label>Пол:
+    <select id="gender" required>
+        <option value="">Выберите пол</option>
+        <option value="Мужской">Мужской</option>
+        <option value="Женский">Женский</option>
+    </select>
+    <div id="gender-error" class="error-message"></div>
+</label><br>
+
+    <label>Телефон: <input type="text" id="phone"></label><br>
+    <div id="phone-error" class="error-message"></div>
+    <label>Email: <input type="email" id="email" required></label><br>
+    <div id="email-error" class="error-message"></div>
+    <label>Испытательный срок:
+    <select id="trial">
+        <option value="">Выберите</option>
+        <option value="1">Да</option>
+        <option value="0">Нет</option>
+    </select>
+    <div id="trial-error" class="error-message"></div>
+    </label><br>
+    <label>Дата устройства: 
+        <input type="date" id="hire_date"  required>
+    <div id="hire-date-error" class="error-message"></div>
+    </label><br><br>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<p id="message" style="color:red;"></p>
+{% endblock %}

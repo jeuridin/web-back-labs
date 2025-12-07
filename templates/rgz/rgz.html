@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block lab %}РГЗ{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='rgz/main.js')}}"></script>
+{% endblock %}
+{% block style%}
+<link rel="stylesheet" href="{{ url_for('static', filename='rgz/main.css')}}">
+{% endblock %}
+{% block main %}
+<div class="menu">
+    {% if session.get('user_id') %}
+        <button class="menu-btn" onclick="logoutUser()">Выйти</button>
+        <a href="{{ url_for('rgz.add_page') }}" class="menu-btn">Добавить сотрудника</a>
+    {% else %}
+        <a href="{{ url_for('rgz.login_page') }}" class="menu-btn">Войти</a>
+        <a href="{{ url_for('rgz.register_page') }}" class="menu-btn">Регистрация</a>
+    {% endif %}
+</div>
+
+<h1>Добро пожаловать в систему отдела кадров</h1>
+
+<!-- Поле поиска -->
+<input type="text" id="search-input" placeholder="Поиск..." oninput="searchEmployees()">
+
+<!-- Кнопки сортировки -->
+<button onclick="sortBy('full_name')">Сортировать по ФИО</button>
+<button onclick="sortBy('position')">Сортировать по должности</button>
+<button onclick="sortBy('email')">Сортировать по email</button>
+
+<!-- Таблица сотрудников -->
+<table>
+    <thead>
+        <tr>
+             <th>ФИО</th>
+            <th>Должность</th>
+            <th>E-mail</th>
+        </tr>
+    </thead>
+    <tbody id="employee-list">
+    </tbody>
+</table>
+<script>
+    fillEmployeeList();
+</script>
+<button id="load-more-btn" onclick="showMore()">Показать ещё</button>
+<!-- Модальное окно для добавления/редактирования сотрудника -->
+<div class="modal">
+    <div style="background:#fff; padding:20px; border-radius:10px; width:400px; position:relative;">
+        <h2>Сотрудник</h2>
+        <input type="hidden" id="id">
+
+        <label>ФИО: <input type="text" id="full_name"></label>
+        <div id="full_name-error" style="color:red;"></div>
+
+        <label>Должность: <input type="text" id="position"></label>
+        <div id="position-error" style="color:red;"></div>
+
+        <label>Пол: 
+            <select id="gender">
+                <option value="М">Мужской</option>
+                <option value="Ж">Женский</option>
+            </select>
+        </label>
+        <div id="gender-error" style="color:red;"></div>
+
+        <label>Телефон: <input type="text" id="phone"></label><br>
+        <label>Email: <input type="text" id="email"></label>
+        <div id="email-error" style="color:red;"></div>
+
+        <label>Испытательный срок: 
+            <select id="trial">
+                <option value="1">Да</option>
+                <option value="0">Нет</option>
+            </select>
+        </label>
+
+        <label>Дата устройства: <input type="date" id="hire_date"></label>
+        <div id="hire_date-error" style="color:red;"></div>
+
+        <div style="margin-top:15px;">
+            <button onclick="sendEmployee()">Сохранить</button>
+            <button onclick="cancel()">Отмена</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
