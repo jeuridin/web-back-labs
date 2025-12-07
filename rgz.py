@@ -25,7 +25,7 @@ def db_connect():
         dir_path = path.dirname(path.realpath(__file__))
         db_path = path.join(dir_path, "databasergz.db")
         conn = sqlite3.connect(db_path)
-        conn.emp_factory = sqlite3.emp
+        conn.row_factory = sqlite3.row
         cur = conn.cursor()
     return conn, cur
 
@@ -91,12 +91,14 @@ def register():
         if existing:
             db_close(conn, cur)
             return jsonify({'error': 'Имя пользователя уже занято'}), 400
+
         cur.execute(
             "INSERT INTO users (username, password, full_name) VALUES (?, ?, ?);",
             (username, password_hash, fullname)
         )
-        cur.execute("SELECT last_insert_empid() as id;")
-        user_id = cur.fetchone()['id']
+        
+        user_id = cur.lastrowid
+
 
     db_close(conn, cur)
     return jsonify({'message': 'Пользователь зарегистрирован', 'user_id': user_id}), 201
