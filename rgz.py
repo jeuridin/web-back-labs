@@ -6,9 +6,8 @@ from psycopg2.extras import RealDictCursor
 import sqlite3
 from os import path
 from datetime import datetime
-
-
 import re
+
 
 rgz = Blueprint('rgz', __name__)
 
@@ -211,15 +210,15 @@ def add_employee():
     conn, cur = db_connect()
 
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("INSERT INTO employees (full_name, position, gender, phone, email, trial, hire_date)"
-        "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;", (employee['full_name'], employee['position'], employee['gender'], 
-                                                              employee['phone'], employee['email'], employee['trial'], hire_date_db))
+        cur.execute("INSERT INTO employees (full_name, position, gender, phone, email, trial, hire_date) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;", 
+                    (employee['full_name'], employee['position'], employee['gender'], 
+                    employee['phone'], employee['email'], employee['trial'], hire_date_db))
         new_id = cur.fetchone()['id']
         conn.commit()
     else:
-        cur.execute("INSERT INTO employees (full_name, position, gender, phone, email, trial, hire_date) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?);", (employee['full_name'], employee['position'], employee['gender'], 
-                                                              employee['phone'], employee['email'], employee['trial'], hire_date_db))
+        cur.execute("INSERT INTO employees (full_name, position, gender, phone, email, trial, hire_date) VALUES (?, ?, ?, ?, ?, ?, ?);", 
+                    (employee['full_name'], employee['position'], employee['gender'], 
+                     employee['phone'], employee['email'], employee['trial'], hire_date_db))
 
         conn.commit()
         new_id = cur.lastrowid
@@ -277,24 +276,23 @@ def put_employee(id):
         return jsonify({'hire_date': 'Дата должна быть в формате YYYY-MM-DD'}), 400
 
     conn, cur = db_connect()
-    if current_app.config['DB_TYPE'] == 'postgres':
+    if current_app.config.get('DB_TYPE') == 'postgres':
         cur.execute(
             "UPDATE employees SET full_name=%s, position=%s, gender=%s, phone=%s, email=%s, trial=%s, hire_date=%s WHERE id=%s RETURNING *;",
             (employee['full_name'], employee['position'], employee['gender'], employee.get('phone', ''),
-             employee['email'], employee['trial'], employee['hire_date'], id)
+            employee['email'], employee['trial'], employee['hire_date'], id)
         )
         updated = cur.fetchone()
-        conn.commit()
+        conn.commit()  # commit после получения данных
     else:
         cur.execute(
             "UPDATE employees SET full_name=?, position=?, gender=?, phone=?, email=?, trial=?, hire_date=? WHERE id=?;",
             (employee['full_name'], employee['position'], employee['gender'], employee.get('phone', ''),
-             employee['email'], employee['trial'], employee['hire_date'], id)
+            employee['email'], employee['trial'], employee['hire_date'], id)
         )
-        conn.commit()
+        conn.commit()  # commit перед запросом SELECT
         cur.execute("SELECT * FROM employees WHERE id=?;", (id,))
         updated = cur.fetchone()
-
     if updated is None:
         abort(404)
 
