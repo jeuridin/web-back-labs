@@ -142,30 +142,49 @@ def add_page():
     return render_template('rgz/add.html')
 
 from flask import session, jsonify
-
 @rgz.route('/rgz/rest-api/employees/', methods=['GET'])
 def get_all_employee():
+    # Connect to the database
     conn, cur = db_connect()
-    cur.execute(f"SELECT * FROM employees ORDER BY id;")
-    emps = cur.fetchall()
+    
+    # Get all employees
+    cur.execute("SELECT * FROM employees ORDER BY id;")
+    rows = cur.fetchall()
+    
+    # Close the database
     db_close(conn, cur)
-    
+
+    # Check if the user is logged in
     is_authenticated = session.get('user_id') is not None
-    
+
     employees = []
-    for emp in emps:
-        employees.append({
+
+    # Go through each record
+    for emp in rows:
+        # Because sqlite3.Row does NOT support .get(), 
+        # we check the column name manually
+        if "phone" in emp.keys():
+            phone_value = emp["phone"]
+        else:
+            phone_value = ""
+
+        # Create a dictionary for one employee
+        employee_data = {
             "id": emp["id"],
             "full_name": emp["full_name"],
             "position": emp["position"],
             "gender": emp["gender"],
-            "phone": emp.get('phone', ''),
+            "phone": phone_value,
             "email": emp["email"],
             "trial": emp["trial"],
             "hire_date": str(emp["hire_date"]),
-            "can_edit": is_authenticated  # новый флаг
-        })
-    
+            "can_edit": is_authenticated
+        }
+
+        # Add to the list
+        employees.append(employee_data)
+
+    # Return JSON
     return jsonify(employees)
 
 @rgz.route('/rgz/rest-api/employees/<int:id>', methods=['GET'])
