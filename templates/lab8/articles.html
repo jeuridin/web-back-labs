@@ -1,15 +1,50 @@
 {% extends 'base.html' %}
 
 {% block lab %}Лабораторная работа 8{% endblock %}
-
+{% block style%}<style>
+h1 {
+    text-align: center;
+}
+form {
+    text-align: center;
+    margin-bottom: 10px;
+}
+input[type="text"] {
+    padding: 5px;
+    width: 200px;
+}
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    background: #fff;
+    margin-bottom: 8px;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+span {
+    color: red;
+}
+</style>
+{% endblock %}}
 {% block main %}
         <h1>Список статей</h1>
-<form action="/lab8/articles" method="get">
-    <input type="text" name="query" placeholder="Поиск..." value="{{ query }}">
-    <button type="submit">Искать</button>
-</form>
-
-
+        <form action="/lab8/articles" method="get">
+            <input type="text" name="query" placeholder="Поиск..." value="{{ query }}">
+            <button type="submit">Искать</button>
+        </form>
         <ul>
             {% for article in articles %}
                 <li>

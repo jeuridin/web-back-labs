@@ -37,6 +37,7 @@ h1 {
     color: #333;
 }
 
+/* Поля ввода */
 input[type="text"],
 input[type="password"] {
     width: 100%;
@@ -48,6 +49,7 @@ input[type="password"] {
     box-sizing: border-box;
 }
 
+/* Кнопка отправки */
 button {
     width: 100%;
     padding: 10px;
@@ -59,6 +61,7 @@ button {
     font-size: 16px;
 }
 
+/* Кнопка при наведении */
 button:hover {
     background-color: #45a049;
 }
