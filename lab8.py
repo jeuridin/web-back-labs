@@ -5,6 +5,7 @@ from flask_login import login_user, login_required, current_user
 from os import path
 from flask_login import logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import func 
 
 lab8 = Blueprint('lab8', __name__)
 
@@ -60,10 +61,31 @@ def register():
     return redirect('/lab8/')
 
 @lab8.route('/lab8/articles')
-@login_required
 def article_list():
-    all_articles = articles.query.filter((articles.is_public == 1) | (articles.login_id == current_user.id)).all()
-    return render_template('lab8/articles.html', articles=all_articles)
+    query = request.args.get('query', '').strip().lower()
+    
+    if not current_user.is_authenticated:
+        base_query = articles.query.filter(articles.is_public == 1)
+    else:
+        base_query = articles.query.filter(
+            (articles.is_public == 1) | (articles.login_id == current_user.id)
+        )
+    
+    all_articles = base_query.all()
+    
+    if not query:
+        articles_list = all_articles
+    else:
+        articles_list = []
+        for article in all_articles:
+            title_lower = article.title.lower() if article.title else ""
+            text_lower = article.article_text.lower() if article.article_text else ""
+            
+            if query in title_lower or query in text_lower:
+                articles_list.append(article)
+    
+    return render_template('lab8/articles.html', articles=articles_list, query=query)
+
 
 @lab8.route('/lab8/logout')
 @login_required
