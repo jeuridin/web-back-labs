@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block lab %}Лабораторная работа 8{% endblock%}
-
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='lab8/lab8.css')}}">
+{% endblock %}
 {% block main %}
     <h1>Вход в систему</h1>
     <form action="/lab8/login", method="post">
@@ -16,8 +18,11 @@
             </label>
         </div>
         <button type="submit">Вход</button>
-        {% if error %}
-            {{ error }}
-        {% endif %}
+        Запомнить меня <input type="checkbox" name="galka">
+        <div>
+            {% if error %}
+                <div style="color:red">{{ error }}</div>
+            {% endif %}
+        </div>
     </form>
 {% endblock %}

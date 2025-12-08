@@ -28,7 +28,7 @@ def load_user(login_id):
     return users.query.get(int(login_id))
 
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно секретный-секрет')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно секретный-секрет').encode('utf-8')
 app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 if app.config['DB_TYPE'] == 'postgres':
     db_name = 'janna_azaryan_orm'

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+        <h1>Список статей</h1>
+        <ul>
+            {% for article in articles %}
+                <li>
+                    <strong>{{ article.title }}</strong><br>
+                    {{ article.article_text }}<br>
+                    Автор ID: {{ article.login_id }}<br>
+                    {% if article.is_public %}
+                        Публичная
+                    {% else %}
+                        Приватная
+                    {% endif %}
+                    {% if article.login_id == current_user.id %}
+                        {% if article.is_favorite %}
+                            <span style="color: red;">★ В избранном</span>
+                        {% endif %}
+                        <form action="/lab8/edit/{{ article.id }}" method="get" style="display:inline;">
+                            <button type="submit">Редактировать</button>
+                        </form>
+                        <form action="/lab8/delete/{{ article.id }}" method="post" style="display:inline;">
+                            <button type="submit">Удалить</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% else %}
+                <li>Статей пока нет</li>
+            {% endfor %}
+        </ul>
+        <a href="/lab8/">На главную</a>
+{% endblock %}
