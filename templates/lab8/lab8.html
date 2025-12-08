@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='lab8/lab8.css')}}">
+{% endblock %}
+{% block main %}
+    <h1>База знаний</h1>
+        <div class="menu">
+        <a href="/lab8/articles">Список статей</a>
+        <a href="/lab8/create">Создать статью</a>
+        <a href="/lab8/login">Войти</a>
+        <a href="/lab8/register">Регистрация</a>
+        <div class="user">anonymous</div>
+        </div>
+{% endblock %}
