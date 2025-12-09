@@ -178,8 +178,6 @@ def add_film():
         return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
         
 
-    conn, cur = db_connect()
-
     if 'year' not in film or film['year'].strip() == '' or not film['year'].isdigit():
         return jsonify({'year': 'Год должен быть числом'}), 400
 
@@ -187,8 +185,7 @@ def add_film():
     if year < 1895 or year > current_year:
         return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
 
-
-
+    conn, cur = db_connect()
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("INSERT INTO films (title, title_ru, year, description) VALUES (%s, %s, %s, %s) RETURNING id;", 
                     (film['title'], film['title_ru'], film['year'], film['description']))
