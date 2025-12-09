@@ -145,22 +145,36 @@ function hideModal() {
 function cancel() {
     hideModal();
 }
-
 function editEmployee(id) {
     fetch(`/rgz/rest-api/employees/${id}`)
     .then(function (response) {
+        console.log('Статус ответа:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         return response.json();
     })
     .then(function (employee) {
+        console.log('Полученные данные сотрудника:', employee);
+        
+        if (!employee || !employee.id) {
+            throw new Error('Неверные данные сотрудника');
+        }
+        
         document.getElementById('id').value = id;
-        document.getElementById('full_name').value = employee.full_name;
-        document.getElementById('position').value = employee.position;
-        document.getElementById('gender').value = employee.gender;
+        document.getElementById('full_name').value = employee.full_name || '';
+        document.getElementById('position').value = employee.position || '';
+        document.getElementById('gender').value = employee.gender || 'М';
         document.getElementById('phone').value = employee.phone || '';
-        document.getElementById('email').value = employee.email;
+        document.getElementById('email').value = employee.email || '';
         document.getElementById('trial').value = employee.trial ? '1' : '0';
-        document.getElementById('hire_date').value = employee.hire_date;
+        document.getElementById('hire_date').value = employee.hire_date || '';
+        
         showModal();
+    })
+    .catch(function (error) {
+        console.error('Ошибка при получении данных сотрудника:', error);
+        alert('Ошибка загрузки данных сотрудника: ' + error.message);
     });
 }
 function sendEmployee() {
