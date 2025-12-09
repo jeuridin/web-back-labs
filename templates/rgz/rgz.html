@@ -8,11 +8,41 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='rgz/main.css')}}">
 {% endblock %}
 {% block main %}
+
+<div style="background: yellow; padding: 20px; margin: 20px;">
+    <h3>Тест сессии:</h3>
+    
+    <!-- Способ 1: Через session -->
+    <p>session.user_id: {{ session.get('user_id', 'НЕТ') }}</p>
+    <p>session.username: {{ session.get('username', 'НЕТ') }}</p>
+    
+    <!-- Способ 2: Через переданные переменные -->
+    <p>user_id: {{ user_id if user_id else 'НЕТ' }}</p>
+    <p>username: {{ username if username else 'НЕТ' }}</p>
+    <p>is_authenticated: {{ is_authenticated }}</p>
+</div>
+
+<!-- ОРИГИНАЛЬНЫЙ КОД, но с исправлением -->
 <div class="menu">
-    {% if session.get('user_id') %}
+    <!-- Используйте is_authenticated вместо session.get -->
+    {% if is_authenticated %}
+        <p style="color: green; font-weight: bold;">
+            ✓ Вы авторизованы как {{ username }}
+        </p>
         <button class="menu-btn" onclick="logoutUser()">Выйти</button>
         <a href="{{ url_for('rgz.add_page') }}" class="menu-btn">Добавить сотрудника</a>
+        
+        <script>
+            console.log("Пользователь авторизован в шаблоне");
+            // Можно сразу заполнить таблицу
+            if (typeof fillEmployeeList === 'function') {
+                fillEmployeeList();
+            }
+        </script>
     {% else %}
+        <p style="color: red; font-weight: bold;">
+            ✗ Вы не авторизованы
+        </p>
         <a href="{{ url_for('rgz.login_page') }}" class="menu-btn">Войти</a>
         <a href="{{ url_for('rgz.register_page') }}" class="menu-btn">Регистрация</a>
     {% endif %}

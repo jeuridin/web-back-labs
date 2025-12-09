@@ -141,33 +141,25 @@ def logout():
 def add_page():
     return render_template('rgz/add.html')
 
-from flask import session, jsonify
 @rgz.route('/rgz/rest-api/employees/', methods=['GET'])
 def get_all_employee():
-    # Step 1: connect to database
     conn, cur = db_connect()
 
-    # Step 2: get all employees
     cur.execute("SELECT * FROM employees ORDER BY id;")
     rows = cur.fetchall()
 
-    # Step 3: close database
     db_close(conn, cur)
 
-    # Step 4: check if the user is logged in
     is_authenticated = session.get('user_id') is not None
 
     employees = []
 
-    # Step 5: go through each row
     for emp in rows:
-        # sqlite3.Row does NOT support .get(), so we do this:
         if "phone" in emp.keys():
             phone_value = emp["phone"]
         else:
             phone_value = ""
 
-        # Step 6: create a dictionary for this employee
         employee_data = {
             "id": emp["id"],
             "full_name": emp["full_name"],
