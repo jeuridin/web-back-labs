@@ -11,12 +11,33 @@ function renderMenu() {
     menu.innerHTML = `
         {% if session.get('user_id') %}
             <button class="menu-btn" onclick="logoutUser()">Выйти</button>
-            <a href="/rgz/add" class="menu-btn">Добавить сотрудника</a>
+            <button class="menu-btn" onclick="showAddForm()">Добавить сотрудника</button>
         {% else %}
             <a href="/rgz/login" class="menu-btn">Войти</a>
             <a href="/rgz/register" class="menu-btn">Регистрация</a>
         {% endif %}
     `;
+}
+
+function showAddForm() {
+    document.getElementById('id').value = '';
+    document.getElementById('full_name').value = '';
+    document.getElementById('position').value = '';
+    document.getElementById('gender').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('trial').value = '';
+    document.getElementById('hire_date').value = '';
+    
+    document.getElementById('fullname-error').innerText = '';
+    document.getElementById('position-error').innerText = '';
+    document.getElementById('gender-error').innerText = '';
+    document.getElementById('phone-error').innerText = '';
+    document.getElementById('email-error').innerText = '';
+    document.getElementById('trial-error').innerText = '';
+    document.getElementById('hire-date-error').innerText = '';
+    
+    document.querySelector('.modal').style.display = 'flex';
 }
 </script>
 {% endblock %}
@@ -63,7 +84,7 @@ function renderMenu() {
         <input type="hidden" id="id">
 
         <label>ФИО: <input type="text" id="full_name"></label>
-        <div id="full_name-error" style="color:red;"></div>
+        <div id="fullname-error" style="color:red;"></div>
 
         <label>Должность: <input type="text" id="position"></label>
         <div id="position-error" style="color:red;"></div>
@@ -77,6 +98,8 @@ function renderMenu() {
         <div id="gender-error" style="color:red;"></div>
 
         <label>Телефон: <input type="text" id="phone"></label><br>
+        
+        <div id="phone-error" style="color:red;"></div>
         <label>Email: <input type="text" id="email"></label>
         <div id="email-error" style="color:red;"></div>
 
@@ -86,9 +109,10 @@ function renderMenu() {
                 <option value="0">Нет</option>
             </select>
         </label>
+        <div id="trial-error" style="color:red;"></div>
 
         <label>Дата устройства: <input type="date" id="hire_date"></label>
-        <div id="hire_date-error" style="color:red;"></div>
+        <div id="hire-date-error" style="color:red;"></div>
 
         <div style="margin-top:15px;">
             <button onclick="sendEmployee()">Сохранить</button>

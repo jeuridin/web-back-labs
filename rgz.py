@@ -169,7 +169,7 @@ def get_all_employee():
             "gender": emp["gender"],
             "phone": phone_value,
             "email": emp["email"],
-            "trial": emp["trial"],
+            "trial": bool(emp["trial"]),
             "hire_date": str(emp["hire_date"]),
             "can_edit": is_authenticated
         }
@@ -198,7 +198,7 @@ def get_employee(id):
         "gender": emp["gender"],
         "phone": emp.get('phone', ''),
         "email": emp["email"],
-        "trial": emp["trial"],
+        "trial": bool(emp["trial"]),
         "hire_date": str(emp["hire_date"])
     }
 
@@ -208,10 +208,33 @@ def get_employee(id):
 @rgz.route('/rgz/rest-api/employees/', methods=['POST'])
 def add_employee():
     employee = request.get_json()
-    if not employee.get('full_name') or not employee.get('position') or not employee.get('gender') \
-        or not employee.get('phone') or not employee.get('email') or not employee.get('trial') \
-        or not employee.get('hire_date'):
-            return jsonify({'error': 'Заполните все поля!'}), 400
+    
+    errors = {}
+    
+    if employee['full_name'] == '':
+        errors['full_name'] = 'Введите ФИО'
+    
+    if employee['position'] == '':
+        errors['position'] = 'Введите должность'
+    
+    if employee['gender'] == '' or employee['gender'] not in ['М', 'Ж']:
+        errors['gender'] = 'Выберите пол'
+    
+    if employee['email'] == '':
+        errors['email'] = 'Введите email'
+    
+    if not isinstance(employee['trial'], bool):
+        errors['trial'] = 'Выберите испытательный срок'
+    
+    if employee['phone'] == '':
+        errors['phone'] = 'Введите телефон'
+
+    if not employee['hire_date']:
+        errors['hire_date'] = 'Выберите дату устройства'
+         
+
+    if errors:
+        return jsonify(errors), 400
 
     hire_date = employee['hire_date']
     day, month, year = hire_date.split('-')
@@ -265,24 +288,31 @@ def del_film(id):
 @rgz.route('/rgz/rest-api/employees/<int:id>', methods=['PUT'])
 def put_employee(id):
     employee = request.get_json()
+    
+    errors = {}
+    if employee['full_name'] == '':
+        errors['full_name'] = 'Введите ФИО'
+    
+    if employee['position'] == '':
+        errors['position'] = 'Введите должность'
+    
+    if employee['gender'] == '' or employee['gender'] not in ['М', 'Ж']:
+        errors['gender'] = 'Выберите пол'
+    
+    if employee['email'] == '':
+        errors['email'] = 'Введите email'
+    
+    if not isinstance(employee['trial'], bool):
+        errors['trial'] = 'Выберите испытательный срок'
+    
+    if employee['phone'] == '':
+        errors['phone'] = 'Введите телефон'
 
-    if not employee.get('full_name', '').strip():
-        return jsonify({'full_name': 'Введите ФИО'}), 400
-    if not employee.get('position', '').strip():
-        return jsonify({'position': 'Введите должность'}), 400
-    if not employee.get('gender', '').strip() or employee['gender'] not in ['М', 'Ж']:
-        return jsonify({'gender': 'Выберите пол'}), 400
-    if not employee.get('email', '').strip():
-        return jsonify({'email': 'Введите email'}), 400
-    if 'trial' not in employee or not isinstance(employee['trial'], bool):
-        return jsonify({'trial': 'Выберите испытательный срок'}), 400
-    if not employee.get('hire_date', '').strip():
-        return jsonify({'hire_date': 'Введите дату устройства'}), 400
-
-    date_pattern = r'^\d{4}-\d{2}-\d{2}$'
-    if not re.match(date_pattern, employee['hire_date']):
-        return jsonify({'hire_date': 'Дата должна быть в формате YYYY-MM-DD'}), 400
-
+    if not employee['hire_date']:
+        errors['hire_date'] = 'Выберите дату устройства'
+    
+    if errors:
+        return jsonify(errors), 400
     conn, cur = db_connect()
     if current_app.config.get('DB_TYPE') == 'postgres':
         cur.execute(

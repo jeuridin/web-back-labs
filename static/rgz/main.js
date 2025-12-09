@@ -135,48 +135,40 @@ function deleteEmployee(id) {
 }
 
 function showModal() {
-    document.querySelector('.modal').classList.add('show');
+    document.getElementById('fullname-error').innerText = '';
+    document.getElementById('position-error').innerText = '';
+    document.getElementById('gender-error').innerText = '';
+    document.getElementById('phone-error').innerText = '';
+    document.getElementById('email-error').innerText = '';
+    document.getElementById('trial-error').innerText = '';
+    document.getElementById('hire-date-error').innerText = '';
+    document.querySelector('div.modal').style.display = 'block';
 }
-
 function hideModal() {
-    document.querySelector('.modal').classList.remove('show');
+    document.querySelector('div.modal').style.display = 'none';
 }
-
 function cancel() {
     hideModal();
 }
+
 function editEmployee(id) {
     fetch(`/rgz/rest-api/employees/${id}`)
-    .then(function (response) {
-        console.log('Статус ответа:', response.status);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+    .then(function (data) {
+        return data.json();
     })
     .then(function (employee) {
-        console.log('Полученные данные сотрудника:', employee);
-        
-        if (!employee || !employee.id) {
-            throw new Error('Неверные данные сотрудника');
-        }
-        
         document.getElementById('id').value = id;
-        document.getElementById('full_name').value = employee.full_name || '';
-        document.getElementById('position').value = employee.position || '';
-        document.getElementById('gender').value = employee.gender || 'М';
-        document.getElementById('phone').value = employee.phone || '';
-        document.getElementById('email').value = employee.email || '';
+        document.getElementById('full_name').value = employee.full_name;
+        document.getElementById('position').value = employee.position;
+        document.getElementById('gender').value = employee.gender;
+        document.getElementById('phone').value = employee.phone;
+        document.getElementById('email').value = employee.email;
         document.getElementById('trial').value = employee.trial ? '1' : '0';
-        document.getElementById('hire_date').value = employee.hire_date || '';
-        
+        document.getElementById('hire_date').value = employee.hire_date;
         showModal();
     })
-    .catch(function (error) {
-        console.error('Ошибка при получении данных сотрудника:', error);
-        alert('Ошибка загрузки данных сотрудника: ' + error.message);
-    });
 }
+
 function sendEmployee() {
     const id = document.getElementById('id').value;
     const employee = {
@@ -185,12 +177,20 @@ function sendEmployee() {
         gender: document.getElementById('gender').value,
         phone: document.getElementById('phone').value,
         email: document.getElementById('email').value,
-        trial: document.getElementById('trial').value === '1',
+        trial: document.getElementById('trial').value,
         hire_date: document.getElementById('hire_date').value
     };
 
     const url = `/rgz/rest-api/employees/${id}`;
     const method = id === '' ? 'POST' : 'PUT';
+
+    document.getElementById('fullname-error').innerText = '';
+    document.getElementById('position-error').innerText = '';
+    document.getElementById('gender-error').innerText = '';
+    document.getElementById('phone-error').innerText = '';
+    document.getElementById('email-error').innerText = '';
+    document.getElementById('trial-error').innerText = '';
+    document.getElementById('hire-date-error').innerText = '';
 
     fetch(url, {
         method: method,
@@ -207,7 +207,7 @@ function sendEmployee() {
     })
     .then(errors => {
         if(errors.full_name)
-            document.getElementById('full_name-error').innerText = errors.full_name;
+            document.getElementById('fullname-error').innerText = errors.full_name;
         if(errors.position)
             document.getElementById('position-error').innerText = errors.position;
         if(errors.gender)
@@ -219,7 +219,8 @@ function sendEmployee() {
         if(errors.trial)
             document.getElementById('trial-error').innerText = errors.trial;
         if(errors.hire_date)
-            document.getElementById('hire_date-error').innerText = errors.hire_date;
+            document.getElementById('hire-date-error').innerText = errors.hire_date;
     });
 }
+
 
