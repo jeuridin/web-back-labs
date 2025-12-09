@@ -103,29 +103,34 @@ def del_film(id):
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
     film = request.get_json()
+    errors = {}
+    
     if film['description'] == '':
-        return jsonify({'description': 'Заполните описание'}), 400
-    if len(film['description']) > 2000:
-        return jsonify({'description': 'Описание не должно превышать 2000 символов'}), 400
-
+        errors['description'] = 'Заполните описание'
+    elif len(film['description']) > 2000:
+        errors['description'] = 'Описание не должно превышать 2000 символов'
+    
     if film['title'] == '':
         film['title'] = film['title_ru']
     
     if film['title'] == '' and film['title_ru'] == '':
-        return jsonify({'title': 'Заполните название'}), 400
-
+        errors['title'] = 'Заполните название'
+    
     if film['title_ru'] == '':
-        return jsonify({'title_ru': 'Заполните название'}), 400
-
+        errors['title_ru'] = 'Заполните название'
+    
     current_year = datetime.now().year
-
+    
     if 'year' not in film or film['year'].strip() == '' or not film['year'].isdigit():
-        return jsonify({'year': 'Год должен быть числом'}), 400
-
-    year = int(film['year'])
-    if year < 1895 or year > current_year:
-        return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
-
+        errors['year'] = 'Год должен быть числом'
+    else:
+        year = int(film['year'])
+        if year < 1895 or year > current_year:
+            errors['year'] = f'Введите год от 1895 до {current_year}'
+    
+    if errors:
+        return jsonify(errors), 400
+    
     conn, cur = db_connect()
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("UPDATE films SET title=%s, title_ru=%s, year=%s, description=%s WHERE id=%s RETURNING *;", 
@@ -154,36 +159,33 @@ def put_film(id):
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
     film = request.get_json()
+    errors = {}
+    
     if film['description'] == '':
-        return jsonify({'description': 'Заполните описание'}), 400
-    if len(film['description']) > 2000:
-        return jsonify({'description': 'Описание не должно превышать 2000 символов'}), 400
-
+        errors['description'] = 'Заполните описание'
+    elif len(film['description']) > 2000:
+        errors['description'] = 'Описание не должно превышать 2000 символов'
+    
     if film['title'] == '':
         film['title'] = film['title_ru']
     
     if film['title'] == '' and film['title_ru'] == '':
-        return jsonify({'title': 'Заполните название'}), 400
-
+        errors['title'] = 'Заполните название'
+    
     if film['title_ru'] == '':
-        return jsonify({'title_ru': 'Заполните название'}), 400
+        errors['title_ru'] = 'Заполните название'
     
     current_year = datetime.now().year
-
+    
     if 'year' not in film or film['year'].strip() == '' or not film['year'].isdigit():
-        return jsonify({'year': 'Год должен быть числом'}), 400
-
-    year = int(film['year'])
-    if year < 1895 or year > current_year:
-        return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
-        
-
-    if 'year' not in film or film['year'].strip() == '' or not film['year'].isdigit():
-        return jsonify({'year': 'Год должен быть числом'}), 400
-
-    year = int(film['year'])
-    if year < 1895 or year > current_year:
-        return jsonify({'year': f'Введите год от 1895 до {current_year}'}), 400
+        errors['year'] = 'Год должен быть числом'
+    else:
+        year = int(film['year'])
+        if year < 1895 or year > current_year:
+            errors['year'] = f'Введите год от 1895 до {current_year}'
+    
+    if errors:
+        return jsonify(errors), 400
 
     conn, cur = db_connect()
     if current_app.config['DB_TYPE'] == 'postgres':
