@@ -172,10 +172,8 @@ def get_all_employee():
             "can_edit": is_authenticated
         }
 
-        # Step 7: add to list
         employees.append(employee_data)
 
-    # Step 8: return as JSON
     return jsonify(employees)
 
 @rgz.route('/rgz/rest-api/employees/<int:id>', methods=['GET'])
@@ -266,7 +264,6 @@ def del_film(id):
 def put_employee(id):
     employee = request.get_json()
 
-    # Проверка обязательных полей
     if not employee.get('full_name', '').strip():
         return jsonify({'full_name': 'Введите ФИО'}), 400
     if not employee.get('position', '').strip():
@@ -280,7 +277,6 @@ def put_employee(id):
     if not employee.get('hire_date', '').strip():
         return jsonify({'hire_date': 'Введите дату устройства'}), 400
 
-    # Проверка формата даты YYYY-MM-DD через регулярное выражение
     date_pattern = r'^\d{4}-\d{2}-\d{2}$'
     if not re.match(date_pattern, employee['hire_date']):
         return jsonify({'hire_date': 'Дата должна быть в формате YYYY-MM-DD'}), 400
@@ -293,14 +289,14 @@ def put_employee(id):
             employee['email'], employee['trial'], employee['hire_date'], id)
         )
         updated = cur.fetchone()
-        conn.commit()  # commit после получения данных
+        conn.commit()
     else:
         cur.execute(
             "UPDATE employees SET full_name=?, position=?, gender=?, phone=?, email=?, trial=?, hire_date=? WHERE id=?;",
             (employee['full_name'], employee['position'], employee['gender'], employee.get('phone', ''),
             employee['email'], employee['trial'], employee['hire_date'], id)
         )
-        conn.commit()  # commit перед запросом SELECT
+        conn.commit()
         cur.execute("SELECT * FROM employees WHERE id=?;", (id,))
         updated = cur.fetchone()
     if updated is None:

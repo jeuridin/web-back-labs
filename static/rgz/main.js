@@ -302,3 +302,21 @@ function sendEmployee() {
             document.getElementById('hire_date-error').innerText = errors.hire_date;
     });
 }
+
+
+function renderMenu() {
+    const menu = document.getElementById("menu");
+    const userId = localStorage.getItem("user_id");
+
+    if (userId) {
+        menu.innerHTML = `
+            <button class="menu-btn" onclick="logoutUser()">Выйти</button>
+            <a href="/add" class="menu-btn">Добавить сотрудника</a>
+        `;
+    } else {
+        menu.innerHTML = `
+            <a href="/login" class="menu-btn">Войти</a>
+            <a href="/register" class="menu-btn">Регистрация</a>
+        `;
+    }
+}
