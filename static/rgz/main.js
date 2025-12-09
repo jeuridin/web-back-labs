@@ -1,91 +1,4 @@
 
-function registerUser() {
-    const form = document.getElementById('registerForm');
-    const message = document.getElementById('message');
-
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const user = {
-            fullname: document.getElementById('fullname').value,
-            username: document.getElementById('username').value,
-            password: document.getElementById('password').value
-        };
-
-        fetch('/rgz/rest-api/register', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(user)
-        })
-        .then(response => response.json().then(data => ({ status: response.status, body: data })))
-        .then(result => {
-            if (result.status === 201) {
-                message.style.color = 'green';
-                message.textContent = 'Пользователь создан!';
-            } else {
-                message.style.color = 'red';
-                message.textContent = result.body.error;
-            }
-        })
-        .catch(() => {
-            message.style.color = 'red';
-            message.textContent = 'Ошибка соединения с сервером';
-        });
-    });
-}
-
-function loginUser() {
-    const form = document.getElementById('loginForm');
-    const message = document.getElementById('message');
-
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const credentials = {
-            username: document.getElementById('username').value,
-            password: document.getElementById('password').value
-        };
-
-        fetch('/rgz/rest-api/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(credentials)
-        })
-        .then(response => response.json().then(data => ({ status: response.status, body: data })))
-        .then(result => {
-            if (result.status === 200) {
-                message.style.color = 'green';
-                message.textContent = 'Успешный вход!';
-                window.location.href = '/rgz/';
-            } else {
-                message.style.color = 'red';
-                message.textContent = result.body.error;
-            }
-        })
-        .catch(() => {
-            message.style.color = 'red';
-            message.textContent = 'Ошибка соединения с сервером';
-        });
-    });
-}
-
-function logoutUser() {
-    fetch('/rgz/rest-api/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(function(response) {
-        return response.json().then(function(data) {
-            return { status: response.status, body: data };
-        });
-    })
-    .then(function(result) {
-        if (result.status === 200) {
-            window.location.href = '/rgz/';
-        }
-    });
-}
-
 let allEmployees = [];
 let visibleCount = 20;
 let filteredEmployees = [];
@@ -200,13 +113,6 @@ function sortBy(field) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('registerForm')) {
-        registerUser();
-    }
-    if (document.getElementById('loginForm')) {
-        loginUser();
-    }
-    
     if (document.getElementById('employee-list')) {
         loadEmployees();
     }
@@ -303,20 +209,3 @@ function sendEmployee() {
     });
 }
 
-
-function renderMenu() {
-    const menu = document.getElementById("menu");
-    const userId = localStorage.getItem("user_id");
-
-    if (userId) {
-        menu.innerHTML = `
-            <button class="menu-btn" onclick="logoutUser()">Выйти</button>
-            <a href="/rgz/add" class="menu-btn">Добавить сотрудника</a>
-        `;
-    } else {
-        menu.innerHTML = `
-            <a href="/rgz/login" class="menu-btn">Войти</a>
-            <a href="/rgz/register" class="menu-btn">Регистрация</a>
-        `;
-    }
-}

@@ -103,8 +103,10 @@ def register():
     return jsonify({'message': 'Пользователь зарегистрирован', 'user_id': user_id}), 201
 
 
-@rgz.route('/rgz/rest-api/login', methods=['POST'])
+@rgz.route('/rgz/rest-api/login', methods=['GET','POST'])
 def login():
+    if request.method == 'GET':
+        return render_template('rgz/login.html')
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')

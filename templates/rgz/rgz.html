@@ -1,33 +1,49 @@
 {% extends 'base.html' %}
 
 {% block lab %}РГЗ{% endblock %}
+
 {% block script %}
 <script src="{{ url_for('static', filename='rgz/main.js')}}"></script>
+<script>
+function renderMenu() {
+    const menu = document.getElementById("menu");
+    
+    menu.innerHTML = `
+        {% if session.get('user_id') %}
+            <button class="menu-btn" onclick="logoutUser()">Выйти</button>
+            <a href="/rgz/add" class="menu-btn">Добавить сотрудника</a>
+        {% else %}
+            <a href="/rgz/login" class="menu-btn">Войти</a>
+            <a href="/rgz/register" class="menu-btn">Регистрация</a>
+        {% endif %}
+    `;
+}
+</script>
 {% endblock %}
+
 {% block style%}
 <link rel="stylesheet" href="{{ url_for('static', filename='rgz/main.css')}}">
 {% endblock %}
+
 {% block main %}
-<div class="menu" id="menu"></div>
+<div class="menu" id="menu">
+</div>
 <script>
     renderMenu();
 </script>
 
 <h1>Добро пожаловать в систему отдела кадров</h1>
 
-<!-- Поле поиска -->
 <input type="text" id="search-input" placeholder="Поиск..." oninput="searchEmployees()">
 
-<!-- Кнопки сортировки -->
 <button onclick="sortBy('full_name')">Сортировать по ФИО</button>
 <button onclick="sortBy('position')">Сортировать по должности</button>
 <button onclick="sortBy('email')">Сортировать по email</button>
 
-<!-- Таблица сотрудников -->
 <table>
     <thead>
         <tr>
-             <th>ФИО</th>
+            <th>ФИО</th>
             <th>Должность</th>
             <th>E-mail</th>
         </tr>
@@ -38,8 +54,9 @@
 <script>
     fillEmployeeList();
 </script>
+
 <button id="load-more-btn" onclick="showMore()">Показать ещё</button>
-<!-- Модальное окно для добавления/редактирования сотрудника -->
+
 <div class="modal">
     <div style="background:#fff; padding:20px; border-radius:10px; width:400px; position:relative;">
         <h2>Сотрудник</h2>
@@ -79,4 +96,22 @@
         </div>
     </div>
 </div>
+
+<script>
+function logoutUser() {
+    fetch('/rgz/rest-api/logout', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success || data.message) {
+            window.location.href = '/rgz';
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка выхода:', error);
+    });
+}
+</script>
+
 {% endblock %}
