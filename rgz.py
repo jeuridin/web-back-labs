@@ -157,17 +157,12 @@ def get_all_employee():
     employees = []
 
     for emp in rows:
-        if "phone" in emp.keys():
-            phone_value = emp["phone"]
-        else:
-            phone_value = ""
-
         employee_data = {
             "id": emp["id"],
             "full_name": emp["full_name"],
             "position": emp["position"],
             "gender": emp["gender"],
-            "phone": phone_value,
+            "phone": emp['phone'],
             "email": emp["email"],
             "trial": bool(emp["trial"]),
             "hire_date": str(emp["hire_date"]),
@@ -196,7 +191,7 @@ def get_employee(id):
         "full_name": emp["full_name"],
         "position": emp["position"],
         "gender": emp["gender"],
-        "phone": emp.get('phone', ''),
+        "phone": emp['phone'],
         "email": emp["email"],
         "trial": bool(emp["trial"]),
         "hire_date": str(emp["hire_date"])
@@ -222,9 +217,29 @@ def add_employee():
     
     if employee['email'] == '':
         errors['email'] = 'Введите email'
-    
-    if not isinstance(employee['trial'], bool):
+    trial_value = employee.get('trial')
+
+    hire_date = employee['hire_date']
+    if '-' in hire_date:
+        parts = hire_date.split('-')
+        if len(parts[0]) == 4:
+            year, month, day = parts
+            hire_date_db = f"{year}-{month}-{day}"
+        else:
+            day, month, year = parts
+            hire_date_db = f"{year}-{month}-{day}"
+    else:
+        errors['hire_date'] = 'Неверный формат даты'
+
+    if trial_value is None:
         errors['trial'] = 'Выберите испытательный срок'
+    elif isinstance(trial_value, str):
+        if trial_value.lower() in ['true', '1', 'on', 'yes', 'да']:
+            employee['trial'] = True
+        elif trial_value.lower() in ['false', '0', 'off', 'no', 'нет']:
+            employee['trial'] = False
+        else:
+            errors['trial'] = f'Некорректное значение: {trial_value}'
     
     if employee['phone'] == '':
         errors['phone'] = 'Введите телефон'
@@ -302,8 +317,29 @@ def put_employee(id):
     if employee['email'] == '':
         errors['email'] = 'Введите email'
     
-    if not isinstance(employee['trial'], bool):
+    trial_value = employee.get('trial')
+
+    hire_date = employee['hire_date']
+    if '-' in hire_date:
+        parts = hire_date.split('-')
+        if len(parts[0]) == 4:
+            year, month, day = parts
+            hire_date_db = f"{year}-{month}-{day}"
+        else:
+            day, month, year = parts
+            hire_date_db = f"{year}-{month}-{day}"
+    else:
+        errors['hire_date'] = 'Неверный формат даты'
+
+    if trial_value is None:
         errors['trial'] = 'Выберите испытательный срок'
+    elif isinstance(trial_value, str):
+        if trial_value.lower() in ['true', '1', 'on', 'yes', 'да']:
+            employee['trial'] = True
+        elif trial_value.lower() in ['false', '0', 'off', 'no', 'нет']:
+            employee['trial'] = False
+        else:
+            errors['trial'] = f'Некорректное значение: {trial_value}'
     
     if employee['phone'] == '':
         errors['phone'] = 'Введите телефон'
@@ -317,16 +353,16 @@ def put_employee(id):
     if current_app.config.get('DB_TYPE') == 'postgres':
         cur.execute(
             "UPDATE employees SET full_name=%s, position=%s, gender=%s, phone=%s, email=%s, trial=%s, hire_date=%s WHERE id=%s RETURNING *;",
-            (employee['full_name'], employee['position'], employee['gender'], employee.get('phone', ''),
-            employee['email'], employee['trial'], employee['hire_date'], id)
+            (employee['full_name'], employee['position'], employee['gender'], employee['phone'],
+            employee['email'], employee['trial'], hire_date_db, id)
         )
         updated = cur.fetchone()
         conn.commit()
     else:
         cur.execute(
             "UPDATE employees SET full_name=?, position=?, gender=?, phone=?, email=?, trial=?, hire_date=? WHERE id=?;",
-            (employee['full_name'], employee['position'], employee['gender'], employee.get('phone', ''),
-            employee['email'], employee['trial'], employee['hire_date'], id)
+            (employee['full_name'], employee['position'], employee['gender'], employee['phone'],
+            employee['email'], employee['trial'], hire_date_db, id)
         )
         conn.commit()
         cur.execute("SELECT * FROM employees WHERE id=?;", (id,))
@@ -339,7 +375,7 @@ def put_employee(id):
         "full_name": updated["full_name"],
         "position": updated["position"],
         "gender": updated["gender"],
-        "phone": updated.get("phone", ""),
+        "phone": updated['phone'],
         "email": updated["email"],
         "trial": updated["trial"],
         "hire_date": str(updated["hire_date"])

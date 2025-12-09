@@ -10,8 +10,8 @@ function renderMenu() {
     
     menu.innerHTML = `
         {% if session.get('user_id') %}
-            <button class="menu-btn" onclick="logoutUser()">Выйти</button>
             <button class="menu-btn" onclick="showAddForm()">Добавить сотрудника</button>
+            <button class="menu-btn" onclick="logoutUser()">Выйти</button>
         {% else %}
             <a href="/rgz/login" class="menu-btn">Войти</a>
             <a href="/rgz/register" class="menu-btn">Регистрация</a>
@@ -97,9 +97,9 @@ function showAddForm() {
         </label>
         <div id="gender-error" style="color:red;"></div>
 
-        <label>Телефон: <input type="text" id="phone"></label><br>
-        
+        <label>Телефон: <input type="text" id="phone"></label>
         <div id="phone-error" style="color:red;"></div>
+
         <label>Email: <input type="text" id="email"></label>
         <div id="email-error" style="color:red;"></div>
 
