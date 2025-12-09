@@ -311,12 +311,12 @@ function renderMenu() {
     if (userId) {
         menu.innerHTML = `
             <button class="menu-btn" onclick="logoutUser()">Выйти</button>
-            <a href="/add" class="menu-btn">Добавить сотрудника</a>
+            <a href="/rgz/add" class="menu-btn">Добавить сотрудника</a>
         `;
     } else {
         menu.innerHTML = `
-            <a href="/login" class="menu-btn">Войти</a>
-            <a href="/register" class="menu-btn">Регистрация</a>
+            <a href="/rgz/login" class="menu-btn">Войти</a>
+            <a href="/rgz/register" class="menu-btn">Регистрация</a>
         `;
     }
 }
