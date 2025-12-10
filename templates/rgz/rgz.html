@@ -12,6 +12,7 @@ function renderMenu() {
         {% if session.get('user_id') %}
             <button class="menu-btn" onclick="showAddForm()">Добавить сотрудника</button>
             <button class="menu-btn" onclick="logoutUser()">Выйти</button>
+            <button class="menu-btn" onclick="confirmDeleteAccount()">Удалить аккаунт</button>
         {% else %}
             <a href="/rgz/login" class="menu-btn">Войти</a>
             <a href="/rgz/register" class="menu-btn">Регистрация</a>
@@ -37,12 +38,28 @@ function showAddForm() {
     document.getElementById('trial-error').innerText = '';
     document.getElementById('hire-date-error').innerText = '';
     
-    document.querySelector('.modal').style.display = 'flex';
+    showModal();
 }
 </script>
 {% endblock %}
 
 {% block style%}
+<style>
+.error {
+    color: #cc0000;
+    background-color: #ffe6e6;
+    border: 1px solid #ffcccc;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    text-align: center;
+    display: none;
+}
+
+.error:not(:empty) {
+    display: block;
+}
+</style>
 <link rel="stylesheet" href="{{ url_for('static', filename='rgz/main.css')}}">
 {% endblock %}
 
@@ -84,10 +101,10 @@ function showAddForm() {
         <input type="hidden" id="id">
 
         <label>ФИО: <input type="text" id="full_name"></label>
-        <div id="fullname-error" style="color:red;"></div>
+        <div id="fullname-error" class="error"></div>
 
         <label>Должность: <input type="text" id="position"></label>
-        <div id="position-error" style="color:red;"></div>
+        <div id="position-error" class="error"></div>
 
         <label>Пол: 
             <select id="gender">
@@ -95,13 +112,13 @@ function showAddForm() {
                 <option value="Ж">Женский</option>
             </select>
         </label>
-        <div id="gender-error" style="color:red;"></div>
+        <div id="gender-error" class="error"></div>
 
         <label>Телефон: <input type="text" id="phone"></label>
-        <div id="phone-error" style="color:red;"></div>
+        <div id="phone-error" class="error"></div>
 
         <label>Email: <input type="text" id="email"></label>
-        <div id="email-error" style="color:red;"></div>
+        <div id="email-error" class="error"></div>
 
         <label>Испытательный срок: 
             <select id="trial">
@@ -109,10 +126,10 @@ function showAddForm() {
                 <option value="0">Нет</option>
             </select>
         </label>
-        <div id="trial-error" style="color:red;"></div>
+        <div id="trial-error" class="error"></div>
 
         <label>Дата устройства: <input type="date" id="hire_date"></label>
-        <div id="hire-date-error" style="color:red;"></div>
+        <div id="hire-date-error" class="error"></div>
 
         <div style="margin-top:15px;">
             <button onclick="sendEmployee()">Сохранить</button>

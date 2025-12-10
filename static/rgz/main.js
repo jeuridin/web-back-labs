@@ -61,6 +61,7 @@ function renderEmployees() {
             
             let delBtn = document.createElement('button');
             delBtn.textContent = 'удалить';
+            delBtn.style.backgroundColor = '#dc3545';
             delBtn.onclick = function() { deleteEmployee(emp.id); };
             
             tdActions.append(editBtn);
@@ -135,6 +136,7 @@ function deleteEmployee(id) {
 }
 
 function showModal() {
+    const modal = document.querySelector('.modal');
     document.getElementById('fullname-error').innerText = '';
     document.getElementById('position-error').innerText = '';
     document.getElementById('gender-error').innerText = '';
@@ -143,6 +145,11 @@ function showModal() {
     document.getElementById('trial-error').innerText = '';
     document.getElementById('hire-date-error').innerText = '';
     document.querySelector('div.modal').style.display = 'block';
+
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+
 }
 function hideModal() {
     document.querySelector('div.modal').style.display = 'none';
@@ -165,6 +172,7 @@ function editEmployee(id) {
         document.getElementById('email').value = employee.email;
         document.getElementById('trial').value = employee.trial ? '1' : '0';
         document.getElementById('hire_date').value = employee.hire_date;
+        
         showModal();
     })
 }
@@ -223,4 +231,28 @@ function sendEmployee() {
     });
 }
 
+function confirmDeleteAccount() {
+    if (confirm('Вы уверены, что хотите удалить аккаунт? Это действие невозможно отменить!')) {
+        deleteAccount();
+    }
+}
 
+function deleteAccount() {
+    fetch('/rgz/rest-api/delete-account', {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Ошибка сервера');
+    })
+    .then(data => {
+        alert('Аккаунт успешно удален!');
+        window.location.href = '/rgz';
+    })
+    .catch(error => {
+        alert('Ошибка при удалении аккаунта');
+        console.error(error);
+    });
+}

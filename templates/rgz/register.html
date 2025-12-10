@@ -73,15 +73,22 @@ button:active {
     transform: translateY(1px);
 }
 
-#message {
-    text-align: center;
+.error {
+    color: #cc0000;
+    background-color: #ffe6e6;
+    border: 1px solid #ffcccc;
     padding: 12px;
-    margin-top: 20px;
+    margin-top: 10px;
     border-radius: 6px;
-    font-weight: 500;
-    display: none;
+    text-align: center;
 }
-
+.success {
+    color: green;
+    background: #e6ffe6;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
 
 </style>
 {% endblock %}
@@ -90,8 +97,8 @@ button:active {
         <h2>Регистрация кадровика</h2>
         
         <input type="text" id="fullname" placeholder="Ваше ФИО">
-        <input type="text" id="username" placeholder="Логин (только английские буквы и цифры)">
-        <input type="password" id="password" placeholder="Пароль (минимум 6 символов)">
+        <input type="text" id="username" placeholder="Логин">
+        <input type="password" id="password" placeholder="Пароль">
         
         <button onclick="registerUser()">Зарегистрироваться</button>
         
@@ -101,50 +108,44 @@ button:active {
     </div>
 {% endblock %}
 {% block script %}
-    <script>
-    function registerUser() {
-        const fullname = document.getElementById('fullname').value.trim();
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const messageDiv = document.getElementById('message');
-        
-        messageDiv.textContent = '';
-        messageDiv.className = 'message';
-        
-        if (!fullname || !username || !password) {
-            showMessage('Заполните все поля', 'error');
-            return;
-        }
-        
-        showMessage('Регистрируем...', '');
-        fetch('/rgz/rest-api/register', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({fullname, username, password})
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Ответ сервера:", data);
-            
-            if (data.success || data.message) {
-                showMessage('✓ Регистрация успешна! Перенаправление...', 'success');
-                
-                setTimeout(() => {
-                    window.location.href = '/rgz';
-                }, 1000);
-            } else {
-                showMessage(data.error || 'Ошибка регистрации', 'error');
-            }
-        })
-        .catch(error => {
-            showMessage('Ошибка соединения с сервером', 'error');
-        });
+<script>
+function registerUser() {
+    const fullname = document.getElementById('fullname').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const msg = document.getElementById('message');
+    
+    msg.textContent = '';
+    msg.className = '';
+    
+    if (!fullname || !username || !password) {
+        msg.textContent = 'Заполните все поля!';
+        msg.className = 'error';
+        return;
     }
     
-    function showMessage(text, type) {
-        const messageDiv = document.getElementById('message');
-        messageDiv.textContent = text;
-        messageDiv.className = 'message ' + (type || '');
-    }
-    </script>
+    fetch('/rgz/rest-api/register', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({fullname, username, password})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            msg.textContent = 'Регистрация успешна! Теперь войдите.';
+            msg.className = 'success';
+            setTimeout(() => {
+                window.location.href = '/rgz/login';
+            }, 1500);
+        } else {
+            msg.textContent = data.error || 'Ошибка';
+            msg.className = 'error';
+        }
+    })
+    .catch(() => {
+        msg.textContent = 'Ошибка соединения';
+        msg.className = 'error';
+    });
+}
+</script>
 {% endblock %}

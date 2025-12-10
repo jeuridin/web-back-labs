@@ -47,7 +47,6 @@ def login_page():
 
 import string
 
-# Функция проверки логина и пароля
 def is_valid_credential(text):
     if not text or text.strip() == "":
         return False
@@ -64,7 +63,6 @@ def register():
     if not fullname or not username or not password:
         return jsonify({'error': 'Все поля обязательны'}), 400
 
-    # Проверка логина и пароля
     if not is_valid_credential(username):
         return jsonify({'error': 'Логин содержит недопустимые символы'}), 400
     if not is_valid_credential(password):
@@ -380,3 +378,25 @@ def put_employee(id):
         "trial": updated["trial"],
         "hire_date": str(updated["hire_date"])
     })
+@rgz.route('/rgz/rest-api/delete-account', methods=['DELETE'])
+def delete_account():
+    if not session.get('user_id'):
+        return jsonify({'error': 'Не авторизован'}), 401
+    
+    user_id = session.get('user_id')
+    
+    try:
+        conn, cur = db_connect()
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("DELETE FROM users WHERE id = %s;", (user_id,))
+        else:
+            cur.execute("DELETE FROM users WHERE id = ?;", (user_id,))
+        
+        db_close(conn, cur)
+        
+        session.clear()
+        
+        return jsonify({'success': True, 'message': 'Аккаунт удален'}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
