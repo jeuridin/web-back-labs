@@ -1,4 +1,3 @@
-
 let allEmployees = [];
 let visibleCount = 20;
 let filteredEmployees = [];
@@ -77,38 +76,39 @@ function showMore() {
 }
 
 function searchEmployees() {
-    let text = document.getElementById("search-input").value.toLowerCase();
-
-    if (text == "") {
-        filteredEmployees = allEmployees.slice();
+    const searchText = document.getElementById("search-input").value.toLowerCase();
+    
+    if (searchText === "") {
+        filteredEmployees = [...allEmployees];
     } else {
-        filteredEmployees = allEmployees.filter(function(emp) {
-            let name = (emp.full_name || "").toLowerCase();
-            let pos = (emp.position || "").toLowerCase();
-            let email = (emp.email || "").toLowerCase();
-
-            return name.includes(text) ||
-                   pos.includes(text) ||
-                   email.includes(text);
+        filteredEmployees = allEmployees.filter(employee => {
+            const name = (employee.full_name || "").toLowerCase();
+            const position = (employee.position || "").toLowerCase();
+            const email = (employee.email || "").toLowerCase();
+            
+            return name.includes(searchText) ||
+                   position.includes(searchText) ||
+                   email.includes(searchText);
         });
     }
+    
     visibleCount = 20;
-
+    
     renderEmployees();
 }
 
 function sortBy(field) {
-    filteredEmployees.sort(function(a, b) {
-        let x = (a[field] || "").toLowerCase();
-        let y = (b[field] || "").toLowerCase();
-
-        if (x < y) return -1;
-        if (x > y) return 1;
+    filteredEmployees.sort((a, b) => {
+        const valueA = (a[field] || "").toLowerCase();
+        const valueB = (b[field] || "").toLowerCase();
+        
+        if (valueA < valueB) return -1;
+        if (valueA > valueB) return 1;
         return 0;
     });
-
+    
     visibleCount = 20;
-
+    
     renderEmployees();
 }
 
@@ -236,23 +236,20 @@ function confirmDeleteAccount() {
         deleteAccount();
     }
 }
-
 function deleteAccount() {
     fetch('/rgz/rest-api/delete-account', {
         method: 'DELETE'
     })
     .then(response => {
         if (response.ok) {
-            return response.json();
+            alert('Аккаунт успешно удален!');
+            window.location.href = '/rgz';
+        } else {
+            alert('Ошибка при удалении аккаунта');
         }
-        throw new Error('Ошибка сервера');
-    })
-    .then(data => {
-        alert('Аккаунт успешно удален!');
-        window.location.href = '/rgz';
     })
     .catch(error => {
-        alert('Ошибка при удалении аккаунта');
+        alert('Ошибка сети или сервера');
         console.error(error);
     });
 }
