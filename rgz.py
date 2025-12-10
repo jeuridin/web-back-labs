@@ -249,10 +249,6 @@ def add_employee():
     if errors:
         return jsonify(errors), 400
 
-    hire_date = employee['hire_date']
-    day, month, year = hire_date.split('-')
-    hire_date_db = f"{year}-{month}-{day}"
-
     conn, cur = db_connect()
 
     if current_app.config['DB_TYPE'] == 'postgres':
