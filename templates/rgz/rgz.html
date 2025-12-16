@@ -114,10 +114,14 @@ function showAddForm() {
         </label>
         <div id="gender-error" class="error"></div>
 
-        <label>Телефон: <input type="text" id="phone"></label>
+        <label>Телефон: 
+            <input type="text" id="phone" placeholder="+79991234567" required>
+        </label>
         <div id="phone-error" class="error"></div>
 
-        <label>Email: <input type="text" id="email"></label>
+        <label>Email: 
+            <input type="email" id="email" placeholder="example@mail.ru" required>
+        </label>
         <div id="email-error" class="error"></div>
 
         <label>Испытательный срок: 
