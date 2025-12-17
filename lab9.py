@@ -1,167 +1,96 @@
-from flask import Blueprint, render_template, request, make_response, redirect, session, current_app, abort, jsonify
-import psycopg2
-from datetime import datetime
-from werkzeug.security import check_password_hash, generate_password_hash
-from psycopg2.extras import RealDictCursor
-import sqlite3
-from os import path
+from flask import Blueprint, render_template, session, jsonify, request
+from flask_login import login_required, current_user
 import random
 
 lab9 = Blueprint('lab9', __name__)
 
+box_count = 10
+box_size = 120  
+vip_boxes = {8, 9, 10}  
 
-messages = [
-    "С Новым годом!", "Счастья!", "Здоровья!", "Удачи!",
-    "Любви!", "Радости!", "Успехов!", "Тепла!", "Мира!", "Денег!"
-]
+wishes = {
+    1: "С новым годом!",
+    2: "Счастья!",
+    3: "Желаю успехов в учёбе и работе, уверенности в себе и вдохновения!",
+    4: "Здоровья!",
+    5: "Удачи!",
+    6: "Счастья",
+    7: "Любви",
+    8: "Тепла!",
+    9: "Мира!",
+    10: "Денег!"
+}
 
-BOX_COUNT = 10
-MAX_OPEN = 3
+boxes = {
+    i: {
+        "opened": False,
+        "text": wishes[i],
+        "gift": f"lab9/gift{i}.png",
+        "box": f"lab9/box{i}.png"
+    }
+    for i in range(1, box_count + 1)
+}
 
-def db_connect():
-    if current_app.config['DB_TYPE'] == 'postgres':
-        conn = psycopg2.connect(
-                host = '127.0.0.1',
-                database = 'janna_azaryan_knowledge_base',
-                user = 'janna_azaryan_knowledge_base',
-                password = '123'
-            )
-        cur = conn.cursor(cursor_factory= RealDictCursor)
-    else:
-        dir_path = path.dirname(path.realpath(__file__))
-        db_path = path.join(dir_path, "database.db")
-        conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3.Row
-        cur = conn.cursor()
-    return conn, cur
-
-def db_close(conn, cur):
-    conn.commit()
-    cur.close()
-    conn.close()
+def generate_positions():
+    return {
+        i: {
+            "top": random.randint(40, 500 - box_size), 
+            "left": random.randint(50, 1500 - box_size)
+        }
+        for i in range(1, box_count + 1)
+    }
 
 @lab9.route('/lab9/')
-def index():
+def lab9_page():
+    if 'opened_count' not in session:
+        session['opened_count'] = 0
     if 'positions' not in session:
-        session['positions'] = [
-            {
-                'id': i,
-                'top': f"{random.randint(5,70)}%",
-                'left': f"{random.randint(5,90)}%"
-            } for i in range(BOX_COUNT)
-        ]
-
-    if 'opened_boxes' not in session:
-        session['opened_boxes'] = []
-
-    return render_template('lab9/index.html')
-
-@lab9.route('/lab9/state')
-def state():
-    opened = session.get('opened_boxes', [])
-    opened_count = len(opened)
-
-    return jsonify({
-        'logged_in': session.get('logged_in', False),
-        'opened_boxes': opened,
-        'opened_count': opened_count,
-        'positions': session.get('positions', [])
-    })
-
-
-@lab9.route('/lab9/register', methods=['POST'])
-def register():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-
-    if not username or not password:
-        return jsonify({'error': 'Заполните все поля'})
-
-    conn, cur = db_connect()
-    if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT * FROM users WHERE login = %s", (username,))
+        positions = generate_positions()
+        session['positions'] = positions
     else:
-        cur.execute("SELECT * FROM users WHERE login = ?", (username,))
-    user = cur.fetchone()
-    if user:
-        db_close(conn, cur)
-        return jsonify({'error': 'Пользователь уже существует'})
+        positions = session['positions']
+    
+    positions = {str(k): v for k, v in positions.items()}
 
-    hashed = generate_password_hash(password)
-    if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("INSERT INTO users (login, password) VALUES (%s, %s)", (username, hashed))
-    else:
-        cur.execute("INSERT INTO users (login, password) VALUES (?, ?)", (username, hashed))
-    db_close(conn, cur)
-    return jsonify({'ok': True})
-
-@lab9.route('/lab9/login', methods=['POST'])
-def login():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-
-    conn, cur = db_connect()
-    if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT * FROM users WHERE login = %s", (username,))
-    else:
-        cur.execute("SELECT * FROM users WHERE login = ?", (username,))
-    user = cur.fetchone()
-    db_close(conn, cur)
-
-    if not user:
-        return jsonify({'error': 'Неверный логин или пароль'})
-
-    db_password = user['password']
-    if not check_password_hash(db_password, password):
-        return jsonify({'error': 'Неверный логин или пароль'})
-
-    session['logged_in'] = True
-    session['username'] = username
-
-    return jsonify({'ok': True})
-
-
+    unopened_count = sum(not b['opened'] for b in boxes.values())
+    
+    return render_template(
+        'lab9/index.html',
+        boxes=boxes,
+        positions=positions,
+        unopened_count=unopened_count
+    )
 
 @lab9.route('/lab9/open', methods=['POST'])
 def open_box():
-    data = request.json
-    box_id = data.get('id')
+    data = request.get_json()
+    box_id = int(data['box_id'])
 
-    if not isinstance(box_id, int) or box_id < 0 or box_id >= BOX_COUNT:
-        return jsonify({'error': 'Некорректный номер коробки'})
+    if box_id in vip_boxes and not current_user.is_authenticated:
+        return jsonify({"error": "Этот подарок доступен только авторизованным пользователям"})
 
-    opened = session.get('opened_boxes', [])
-    if box_id in opened:
-        return jsonify({'error': 'Коробка уже открыта'})
-    if len(opened) >= MAX_OPEN:
-        return jsonify({'error': 'Можно открыть только 3 коробки'})
-    if box_id >= 7 and not session.get('logged_in'):
-        return jsonify({'error': 'Этот подарок доступен только авторизованным'})
+    if session.get('opened_count', 0) >= 3:
+        return jsonify({"error": "Можно открыть не более 3 подарков"})
 
-    opened.append(box_id)
-    session['opened_boxes'] = opened
-    opened_count = len(opened)
+    if boxes[box_id]['opened']:
+        return jsonify({"error": "Этот подарок уже забрали"})
+
+    boxes[box_id]['opened'] = True
+    session['opened_count'] = session.get('opened_count', 0) + 1
 
     return jsonify({
-        'ok': True,
-        'message': messages[box_id],
-        'opened_count': opened_count
+        "text": boxes[box_id]['text'],
+        "gift": boxes[box_id]['gift'],
+        "opened_left": sum(not b['opened'] for b in boxes.values())
     })
 
-@lab9.route('/lab9/logout', methods=['POST'])
-def logout():
-    session.pop('logged_in', None)
-    session.pop('username', None)
-    session['opened_boxes'] = []
-    return jsonify({'ok': True})
-
-@lab9.route('/lab9/santa_reset', methods=['POST'])
-def santa_reset():
-    if not session.get('logged_in'):
-        return jsonify({'error': 'Требуется авторизация'})
-    session['opened_boxes'] = []
-    return jsonify({'ok': True})
-
-
+@lab9.route('/lab9/reset', methods=['POST'])
+@login_required
+def reset_boxes():
+    for box in boxes.values():
+        box['opened'] = False
+    
+    session['opened_count'] = 0
+    session.pop('positions', None)
+    
+    return jsonify({"ok": True})

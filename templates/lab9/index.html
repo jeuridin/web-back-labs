@@ -1,140 +1,259 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 9{% endblock %}
 
 {% block main %}
 <style>
-
-body { font-family: Arial, sans-serif; margin: 0; }
-#panel { background: #fff; padding: 10px; }
-    #gifts {
-    position: relative;
-    height: 80vh;
-}
-
-.gift {
-    position: absolute;
-    width: 90px; 
-    height: auto;
-    cursor: pointer;
-}
-
-.gift img {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-}
-
+    body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+    }
+    
+    .panel {
+        background: #fff; 
+        padding: 15px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #ddd;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .panel input {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        min-width: 150px;
+    }
+    
+    .panel button {
+        padding: 8px 16px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+    
+    .panel button:hover {
+        background: #45a049;
+    }
+    
+    .panel #santa-button {
+        background: #d32f2f;
+    }
+    
+    .panel #santa-button:hover {
+        background: #b71c1c;
+    }
+    
+    .panel span {
+        margin-left: auto;
+        font-size: 16px;
+    }
+    
+    .gifts-container {
+        position: relative;
+        height: 80vh;
+        border-radius: 10px;
+        margin: 0 20px;
+        overflow: hidden;
+    }
+    
+    .gift-box {
+        position: absolute;
+        width: 90px;
+        height: auto;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.3s;
+    }
+    
+    .gift-box:hover {
+        transform: scale(1.05);
+    }
+    
+    .gift-box img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        z-index: 1000;
+    }
+    
+    .modal-content {
+        background: white;
+        width: 400px;
+        margin: 100px auto;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        cursor: pointer;
+        font-size: 24px;
+        color: #888;
+        font-weight: bold;
+    }
+    
+    .close-modal:hover {
+        color: #000;
+    }
+    
+    .gift-image {
+        max-width: 100%;
+        height: auto;
+        margin: 15px 0;
+        border-radius: 5px;
+    }
+    
+    .message {
+        margin: 10px 0;
+        font-size: 16px;
+        color: #333;
+        line-height: 1.5;
+    }
+    
+    .user-status {
+        padding: 8px 12px;
+        background: #e8f5e9;
+        border-radius: 4px;
+        font-size: 14px;
+        border: 1px solid #c8e6c9;
+    }
+    
+    .auth-links {
+        display: flex;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    
+    .auth-links a {
+        color: #2196F3;
+        text-decoration: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background 0.3s;
+    }
+    
+    .auth-links a:hover {
+        background: #e3f2fd;
+    }
 </style>
 
-<div id="panel">
-    <input id="username" placeholder="Логин">
-    <input id="password" type="password" placeholder="Пароль">
+<h2>Новогодние подарки</h2>
 
-    <button onclick="register()">Регистрация</button>
-    <button onclick="login()">Войти</button>
-    <button onclick="logout()">Выйти</button>
-    <button id="santa" onclick="santa()" style="display:none">Дед Мороз</button>
-
-    <span>Открыто: <b id="count">0</b>/3</span>
+<div class="panel">
+    <div class="user-status">
+        {% if current_user.is_authenticated %}
+            Вы вошли как: <strong>{{ current_user.login }}</strong>
+        {% else %}
+            Вы не авторизованы
+        {% endif %}
+    </div>
+    
+    <ul class="auth-links">
+        {% if not current_user.is_authenticated %}
+            <li><a href="/lab8/login">Вход</a></li>
+            <li><a href="/lab8/register">Регистрация</a></li>
+        {% endif %}
+        {% if current_user.is_authenticated %}
+            <li><a href="/lab8/logout">Выход</a></li>
+        {% endif %}
+    </ul>
+    
+    <span>Неоткрытых коробок: <b id="count">{{ unopened_count }}</b></span>
+    
+    {% if current_user.is_authenticated %}
+        <button id="santa-button" onclick="resetBoxes()">Дед Мороз</button>
+    {% endif %}
 </div>
 
-<div id="gifts"></div>
-{% endblock %}
+<div class="gifts-container" id="gifts-area">
+    {% for id, box in boxes.items() %}
+        {% set id_str = id|string %}
+        <div class="gift-box" id="box{{ id }}" onclick="openBox({{ id }})"
+             style="top: {{ positions[id_str]['top'] }}px; left: {{ positions[id_str]['left'] }}px;">
+            <img src="/static/{{ box.box }}" alt="Подарок {{ id }}"
+                 {% if box.opened %}style="opacity: 0.3;"{% endif %}>
+        </div>
+    {% endfor %}
+</div>
 
-{% block script %}
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div id="modal-content"></div>
+    </div>
+</div>
+
 <script>
-function loadGifts() {
-    fetch('/lab9/state')
-    .then(function(resp) { return resp.json(); })
-    .then(function(d) {
-        document.getElementById('count').innerText = d.opened_count;
-        document.getElementById('santa').style.display = d.logged_in ? 'inline-block' : 'none';
-
-        var giftsDiv = document.getElementById('gifts');
-        giftsDiv.innerHTML = '';
-
-        for(var i = 0; i < d.positions.length; i++) {
-            var p = d.positions[i];
-            var div = document.createElement('div');
-            div.className = 'gift';
-            div.style.top = p.top;
-            div.style.left = p.left;
-
-            div.onclick = (function(id) {
-                return function() { openBox(id); };
-            })(p.id);
-
-            var img = document.createElement('img');
-            img.src = d.opened_boxes.includes(p.id)
-                ? '/static/lab9/gift' + (p.id + 1) + '.png'
-                : '/static/lab9/box' + (p.id + 1) + '.png';
-
-            div.appendChild(img);
-            giftsDiv.appendChild(div);
-        }
-    });
-}
-
-function register() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    fetch('/lab9/register', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({username: username, password: password})
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-        alert(d.ok ? 'Зарегистрирован' : d.error);
-    });
-}
-
-function login() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    fetch('/lab9/login', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({username: username, password: password})
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-        if(d.ok) loadGifts();
-        else alert(d.error);
-    });
-}
-
-function logout() {
-    fetch('/lab9/logout', {method:'POST'})
-    .then(function() { loadGifts(); });
-}
-
 function openBox(id) {
     fetch('/lab9/open', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({id: id})
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({box_id: id})
     })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-        if(d.error) alert(d.error);
-        else alert(d.message);
-        loadGifts();
+    .then(r => r.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        document.getElementById('box' + id).style.opacity = '0.3';
+        
+        document.getElementById('modal-content').innerHTML = `
+            <h3>Ваш подарок!</h3>
+            <p class="message">${data.text}</p>
+            <img src="/static/${data.gift}" class="gift-image">
+        `;
+        
+        document.getElementById('modal').style.display = 'block';
+        
+        document.getElementById('count').innerText = data.opened_left;
     });
 }
-function santa() {
-    fetch('/lab9/santa_reset', {method:'POST'})
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-        if(d.error) alert(d.error);
-        loadGifts();
-    });
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
 }
-document.addEventListener('DOMContentLoaded', function() {
-    loadGifts();
-});
+
+function resetBoxes() {
+    if (!confirm('Точно сбросить все коробки и начать заново? Все позиции будут перегенерированы.')) {
+        return;
+    }
+    
+    fetch('/lab9/reset', {method: 'POST'})
+        .then(() => {
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при сбросе');
+        });
+}
 
 </script>
 {% endblock %}
