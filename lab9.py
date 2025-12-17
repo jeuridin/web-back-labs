@@ -9,7 +9,6 @@ import random
 
 lab9 = Blueprint('lab9', __name__)
 
-users = {}
 
 messages = [
     "С Новым годом!", "Счастья!", "Здоровья!", "Удачи!",
@@ -70,7 +69,6 @@ def state():
     })
 
 
-
 @lab9.route('/lab9/register', methods=['POST'])
 def register():
     data = request.json
@@ -104,7 +102,6 @@ def login():
     username = data.get('username')
     password = data.get('password')
 
-    # Подключение к БД
     conn, cur = db_connect()
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("SELECT * FROM users WHERE login = %s", (username,))
@@ -116,15 +113,12 @@ def login():
     if not user:
         return jsonify({'error': 'Неверный логин или пароль'})
 
-    # Получаем хеш пароля
-    db_password = user['password']  # одинаково для Postgres и SQLite
+    db_password = user['password']
     if not check_password_hash(db_password, password):
         return jsonify({'error': 'Неверный логин или пароль'})
 
-    # Авторизация
     session['logged_in'] = True
     session['username'] = username
-    session['opened_boxes'] = []
 
     return jsonify({'ok': True})
 

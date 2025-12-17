@@ -33,7 +33,6 @@ body { font-family: Arial, sans-serif; margin: 0; }
     <button onclick="register()">Регистрация</button>
     <button onclick="login()">Войти</button>
     <button onclick="logout()">Выйти</button>
-    <button id="reset" onclick="resetBoxes()">Сбросить</button>
     <button id="santa" onclick="santa()" style="display:none">Дед Мороз</button>
 
     <span>Открыто: <b id="count">0</b>/3</span>
@@ -50,7 +49,6 @@ function loadGifts() {
     .then(function(d) {
         document.getElementById('count').innerText = d.opened_count;
         document.getElementById('santa').style.display = d.logged_in ? 'inline-block' : 'none';
-        document.getElementById('reset').style.display = d.logged_in ? 'inline-block' : 'none';
 
         var giftsDiv = document.getElementById('gifts');
         giftsDiv.innerHTML = '';
@@ -126,16 +124,6 @@ function openBox(id) {
         loadGifts();
     });
 }
-
-function resetBoxes() {
-    fetch('/lab9/santa_reset', {method:'POST'})
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-        if(d.error) alert(d.error);
-        loadGifts();
-    });
-}
-
 function santa() {
     fetch('/lab9/santa_reset', {method:'POST'})
     .then(function(r){ return r.json(); })
@@ -144,8 +132,6 @@ function santa() {
         loadGifts();
     });
 }
-
-// запускаем при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     loadGifts();
 });
