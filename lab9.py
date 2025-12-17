@@ -4,9 +4,9 @@ import random
 
 lab9 = Blueprint('lab9', __name__)
 
-box_count = 10
-box_size = 120  
-vip_boxes = {8, 9, 10}  
+BOX_COUNT = 10
+BOX_SIZE = 120  
+VIP_BOXES = {8, 9, 10}  
 
 wishes = {
     1: "С новым годом!",
@@ -28,17 +28,18 @@ boxes = {
         "gift": f"lab9/gift{i}.png",
         "box": f"lab9/box{i}.png"
     }
-    for i in range(1, box_count + 1)
+    for i in range(1, BOX_COUNT + 1)
 }
 
 def generate_positions():
     return {
         i: {
-            "top": random.randint(40, 500 - box_size), 
-            "left": random.randint(50, 1500 - box_size)
+            "top": random.randint(40, 500 - BOX_SIZE), 
+            "left": random.randint(50, 1500 - BOX_SIZE)
         }
-        for i in range(1, box_count + 1)
+        for i in range(1, BOX_COUNT + 1)
     }
+
 
 @lab9.route('/lab9/')
 def lab9_page():
@@ -66,7 +67,7 @@ def open_box():
     data = request.get_json()
     box_id = int(data['box_id'])
 
-    if box_id in vip_boxes and not current_user.is_authenticated:
+    if box_id in VIP_BOXES and not current_user.is_authenticated:
         return jsonify({"error": "Этот подарок доступен только авторизованным пользователям"})
 
     if session.get('opened_count', 0) >= 3:
