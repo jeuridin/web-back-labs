@@ -31,15 +31,23 @@ boxes = {
     for i in range(1, BOX_COUNT + 1)
 }
 
-def generate_positions():
-    return {
-        i: {
-            "top": random.randint(40, 500 - BOX_SIZE), 
-            "left": random.randint(50, 1500 - BOX_SIZE)
-        }
-        for i in range(1, BOX_COUNT + 1)
-    }
+def intersects(a, b):
+    return not (
+        a['left'] + BOX_SIZE < b['left'] or
+        a['left'] > b['left'] + BOX_SIZE or
+        a['top'] + BOX_SIZE < b['top'] or
+        a['top'] > b['top'] + BOX_SIZE
+    )
 
+def generate_positions():
+    positions = {}
+    for i in range(1, BOX_COUNT + 1):
+        while True:
+            pos = {"top": random.randint(40, 500 - BOX_SIZE), "left": random.randint(50, 1500 - BOX_SIZE)}
+            if all(not intersects(pos, positions[j]) for j in positions):
+                positions[i] = pos
+                break
+    return positions
 
 @lab9.route('/lab9/')
 def lab9_page():
